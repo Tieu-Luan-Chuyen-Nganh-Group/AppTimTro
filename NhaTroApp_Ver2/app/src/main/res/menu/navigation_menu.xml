@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home"
+        android:title="Home"
+        android:icon="@drawable/home"
+        />
+    <item
+        android:id="@+id/nav_newpost"
+        android:title="New post"
+        android:icon="@drawable/document"
+        />
+    <item
+        android:id="@+id/nav_profile"
+        android:title="Profile"
+        android:icon="@drawable/user"
+        />
+    <item
+        android:id="@+id/nav_findRoom"
+        android:title="FindRoom"
+        android:icon="@drawable/hotel"
+        />
+    <item
+        android:id="@+id/nav_message"
+        android:title="Message"
+        android:icon="@drawable/speechbubble"
+        />
+    <item
+        android:id="@+id/nav_setting"
+        android:title="Setting"
+        android:icon="@drawable/settings"
+        />
+    <item
+        android:id="@+id/nav_logout"
+        android:title="Logout"
+        android:icon="@drawable/logout"
+        />
+</menu>

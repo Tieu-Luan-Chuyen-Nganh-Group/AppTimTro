@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "448280265678",
+    "firebase_url": "https://nhatrodb.firebaseio.com",
+    "project_id": "nhatrodb",
+    "storage_bucket": "nhatrodb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:448280265678:android:6c17cad6565413b979219f",
+        "android_client_info": {
+          "package_name": "app.nhatro.tlcn.nhatroapp_ver2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "448280265678-69uiiv80d7ioe3ucjigmh1f24ku4cd8p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.nhatro.tlcn.nhatroapp_ver2",
+            "certificate_hash": "5d0127eb9fcbbeb2bd89b5293a7488a6d4f48975"
+          }
+        },
+        {
+          "client_id": "448280265678-op2138bbclle5crambg57jl54u08hqoh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3r8p38b0Cj59-UaXhmo0SKgYMO0sRQBQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "448280265678-op2138bbclle5crambg57jl54u08hqoh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
