@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.hasChild(current_user_id)){
-                    //SendUserToSetupActivity();
+                    SendUserToSetupActivity();
                 }
             }
 
