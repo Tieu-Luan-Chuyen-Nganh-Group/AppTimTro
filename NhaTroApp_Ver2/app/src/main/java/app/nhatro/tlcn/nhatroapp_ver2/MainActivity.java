@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,22 +22,35 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private RecyclerView postLists;
+    private ImageButton addNewPostBtn;
+    private CircleImageView NavProfileImg;
+    private TextView NavProfileUserName;
     private Toolbar mToolbar;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef;
+    String currentUserId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null){
+            SendUserToLoginActivity();
+        }else{
+            currentUserId = mAuth.getCurrentUser().getUid();
+        }
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
         mToolbar = (Toolbar) findViewById(R.id.main_page_toolbar);
@@ -47,8 +62,38 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        addNewPostBtn = (ImageButton) findViewById(R.id.imgBtn_add_new_post);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         View navView = navigationView.inflateHeaderView(R.layout.navigation_header);
+
+        NavProfileImg = (CircleImageView) navView.findViewById(R.id.nav_profile_img);
+        NavProfileUserName = (TextView) navView.findViewById(R.id.nav_username);
+
+        UsersRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    if(dataSnapshot.hasChild("fullname")){
+                        String fullname=dataSnapshot.child("fullname").getValue().toString();
+                        NavProfileUserName.setText(fullname);
+                    }
+                    if(dataSnapshot.hasChild("profileimage")){
+                        String image=dataSnapshot.child("profileimage").getValue().toString();
+                        Picasso.with(MainActivity.this).load(image).placeholder(R.drawable.profile).into(NavProfileImg);
+                    }
+                    else {
+                        SendUserToSetupActivity();
+                        Toast.makeText(MainActivity.this,"Profile image or name do not exists...", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -57,6 +102,18 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        addNewPostBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SendUserToPostActivity();
+            }
+        });
+    }
+
+    private void SendUserToPostActivity() {
+        Intent postActivity = new Intent(MainActivity.this, PostActivity.class);
+        startActivity(postActivity);
     }
 
     @Override
@@ -124,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_newpost:
-                Toast.makeText(this, "New post", Toast.LENGTH_SHORT).show();
+                SendUserToPostActivity();
                 break;
             case R.id.nav_findRoom:
                 Toast.makeText(this, "File room", Toast.LENGTH_SHORT).show();

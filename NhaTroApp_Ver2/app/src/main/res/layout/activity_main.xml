@@ -16,12 +16,14 @@
             layout="@layout/app_bar_layout">
 
         </include>
+
         <FrameLayout
             android:id="@+id/main_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true">
+            android:layout_marginTop="0dp">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/all_uses_post_list"
@@ -29,6 +31,20 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="55dp" />
         </FrameLayout>
+
+        <ImageButton
+            android:id="@+id/imgBtn_add_new_post"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:background="@color/colorPrimaryDark"
+            android:scaleType="centerCrop"
+            android:baselineAlignBottom="false"
+            android:focusableInTouchMode="false"
+            android:src="@drawable/add_post_high" />
     </RelativeLayout>
 
     <android.support.design.widget.NavigationView
