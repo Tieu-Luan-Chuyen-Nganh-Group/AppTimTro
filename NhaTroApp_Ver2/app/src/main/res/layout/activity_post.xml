@@ -19,11 +19,12 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="86dp"
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/profile"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="19dp" />
+        tools:layout_editor_absoluteY="19dp"
+        />
 
     <EditText
         android:id="@+id/post_description"

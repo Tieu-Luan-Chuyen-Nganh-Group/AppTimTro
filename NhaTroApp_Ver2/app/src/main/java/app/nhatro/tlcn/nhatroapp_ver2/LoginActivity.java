@@ -53,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    // đăng nhập với email và mật khẩu
     private void AllowingUserToLogin() {
         String email = UserEmailEditText.getText().toString();
         String password = PassWordEditText.getText().toString();
@@ -88,6 +89,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    // chuyển đến màn hình chính khi đăng nhập thành công
     private void SendUserToMainActivity() {
         Intent mainActivity = new Intent(LoginActivity.this, MainActivity.class);
         mainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -96,6 +98,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    // chuyển đến màn hình đăng kí nếu chưa có tài khoản
     private void SendUserToRegisterActivity() {
 
         Intent registerInter = new Intent(LoginActivity.this, RegisterActivity.class);

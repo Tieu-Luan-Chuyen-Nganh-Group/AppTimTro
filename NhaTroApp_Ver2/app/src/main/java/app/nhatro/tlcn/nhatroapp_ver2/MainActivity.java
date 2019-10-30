@@ -44,7 +44,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // lấy danh sách account từ firebase
         mAuth = FirebaseAuth.getInstance();
+        //kiểm tra tài khoản hiện tại - nếu chưa có thì chuyển đến màn hình đăng nhập - nếu có thì lấy id user đó
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null){
             SendUserToLoginActivity();
@@ -55,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
 
         mToolbar = (Toolbar) findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Home");
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawable_layout);
@@ -69,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         NavProfileImg = (CircleImageView) navView.findViewById(R.id.nav_profile_img);
         NavProfileUserName = (TextView) navView.findViewById(R.id.nav_username);
 
+        // lấy thông tin của user hiện tại hiện thị trong màn hình thông tin
         UsersRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -103,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // khi click vào button này thì chuyển đến màn hình thêm bài viết mới
         addNewPostBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // chuyển user tới màn hình thêm bài viết mới
     private void SendUserToPostActivity() {
         Intent postActivity = new Intent(MainActivity.this, PostActivity.class);
         startActivity(postActivity);
@@ -147,6 +154,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    // chuyển đến màn hình cập nhật thông tin user
     private void SendUserToSetupActivity() {
         Intent setupActivity = new Intent(MainActivity.this, SetupActivity.class);
         setupActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -155,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // chuyển đến màn hình login
     private void SendUserToLoginActivity() {
         Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
         loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );

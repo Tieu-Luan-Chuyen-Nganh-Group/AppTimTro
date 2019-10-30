@@ -53,7 +53,9 @@ public class SetupActivity extends AppCompatActivity {
         loadingBar = new ProgressDialog(this);
 
         currentUserID = mAuth.getCurrentUser().getUid();
+        // lấy thông tin user hiện tại
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserID);
+        // lấy profileimage của user hiện tại
         UserProfileImageRef = FirebaseStorage.getInstance().getReference().child("profile image");
 
         usernameEdittext = (EditText) findViewById(R.id.editText_Setup_Username);
@@ -69,6 +71,7 @@ public class SetupActivity extends AppCompatActivity {
             }
         });
 
+        // chuyển đến bộ lưu trữ hình ảnh của điện thoại và cho người dùng chọn ảnh
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,6 +82,7 @@ public class SetupActivity extends AppCompatActivity {
             }
         });
 
+        // hiển thị hình ảnh người dùng đã chọn lên màn hình
         UsersRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -106,6 +110,7 @@ public class SetupActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // cho người dùng cắt ảnh khi đã chọn 1 ảnh
         if(requestCode==Gallery_Pick && resultCode==RESULT_OK && data!=null){
             Uri ImageUri=data.getData();
 
@@ -188,6 +193,8 @@ public class SetupActivity extends AppCompatActivity {
                     loadingBar.setMessage("Please wait!!!");
                     loadingBar.show();
                     loadingBar.setCanceledOnTouchOutside(true);
+
+                    //lưu dữ liệu lên Firebase
                     HashMap userMap = new HashMap();
                     userMap.put("username", username);
                     userMap.put("fullname", fullname);
@@ -217,6 +224,7 @@ public class SetupActivity extends AppCompatActivity {
         }
     }
 
+    // chuyển đến màn hình chính
     private void SendUserToMainActivity() {
         Intent mainActivity = new Intent(SetupActivity.this, MainActivity.class);
         mainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

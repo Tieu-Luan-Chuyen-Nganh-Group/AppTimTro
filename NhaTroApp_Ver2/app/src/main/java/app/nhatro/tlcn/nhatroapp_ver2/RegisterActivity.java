@@ -44,6 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    // tạo 1 tài khoản mới và lưu dữ liệu người dùng lên firebase
     private void CreateAccount() {
 
         String email = emailEditText.getText().toString();
@@ -92,6 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    // chuyển đến màn hình cập nhập thông tin
     private void SenUserToSetupActivity() {
         Intent setupActivity = new Intent(RegisterActivity.this, SetupActivity.class);
         setupActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
