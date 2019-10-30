@@ -1,5 +1,6 @@
 package app.nhatro.tlcn.nhatroapp_ver2;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -7,14 +8,17 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -37,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private FirebaseAuth mAuth;
-    private DatabaseReference UsersRef;
+    private DatabaseReference UsersRef, PostsRef;
     String currentUserId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             currentUserId = mAuth.getCurrentUser().getUid();
         }
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        PostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
 
         mToolbar = (Toolbar) findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mToolbar);
@@ -68,6 +73,14 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         addNewPostBtn = (ImageButton) findViewById(R.id.imgBtn_add_new_post);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
+
+        postLists = (RecyclerView) findViewById(R.id.all_uses_post_list);
+        postLists.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+        postLists.setLayoutManager(linearLayoutManager);
+
         View navView = navigationView.inflateHeaderView(R.layout.navigation_header);
 
         NavProfileImg = (CircleImageView) navView.findViewById(R.id.nav_profile_img);
@@ -115,6 +128,75 @@ public class MainActivity extends AppCompatActivity {
                 SendUserToPostActivity();
             }
         });
+
+        //hiển thị tất cả bài đăng
+        DisplayAllPosts();
+    }
+
+    private void DisplayAllPosts() {
+        FirebaseRecyclerAdapter<Post, PostsViewHolder> firebaseRecyclerAdapter =
+                new FirebaseRecyclerAdapter<Post, PostsViewHolder>
+                        (
+                                Post.class,
+                                R.layout.all_posts_layout,
+                                PostsViewHolder.class,
+                                PostsRef
+                        )
+                {
+                    @Override
+                    protected void populateViewHolder(PostsViewHolder viewHolder, Post model, int position) {
+
+                        viewHolder.setFullname(model.getFullname());
+                        viewHolder.setDescription(model.getDescription());
+                        viewHolder.setDate(model.getDate());
+                        viewHolder.setTime(model.getTime());
+                        viewHolder.setProfileimage(getApplicationContext() , model.getProfileimage());
+                        viewHolder.setPostimage(getApplicationContext(), model.getPostimage());
+                    }
+                };
+
+        postLists.setAdapter(firebaseRecyclerAdapter);
+    }
+
+    public static class PostsViewHolder extends RecyclerView.ViewHolder{
+
+
+        View mView;
+
+        public PostsViewHolder(@NonNull View itemView) {
+            super(itemView);
+            mView = itemView;
+        }
+
+        public void setFullname(String fullname) {
+            TextView usernametxt = (TextView) mView.findViewById(R.id.post_username);
+            usernametxt.setText(fullname);
+        }
+
+        public void setProfileimage(Context ctx, String profileimage) {
+            CircleImageView imagetxt = (CircleImageView) mView.findViewById(R.id.post_profile_image);
+            Picasso.with(ctx).load(profileimage).into(imagetxt);
+        }
+
+        public void setDescription(String description) {
+            TextView descriptiontxt = (TextView) mView.findViewById(R.id.post_description);
+            descriptiontxt.setText(description);
+        }
+
+        public void setDate(String date) {
+            TextView datetxt = (TextView) mView.findViewById(R.id.post_date);
+            datetxt.setText("    " +date);
+        }
+
+        public void setTime(String time) {
+            TextView timetxt = (TextView) mView.findViewById(R.id.post_time);
+            timetxt.setText("    " + time);
+        }
+
+        public void setPostimage(Context ctx , String postimage) {
+            ImageView imagetxt = (ImageView) mView.findViewById(R.id.post_image);
+            Picasso.with(ctx).load(postimage).into(imagetxt);
+        }
     }
 
     // chuyển user tới màn hình thêm bài viết mới

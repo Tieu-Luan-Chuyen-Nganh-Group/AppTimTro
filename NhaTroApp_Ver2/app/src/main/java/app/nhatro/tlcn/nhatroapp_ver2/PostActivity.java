@@ -132,7 +132,7 @@ public class PostActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if (task.isSuccessful()){
 
-                    downloadUrl = task.getResult().toString();
+                    downloadUrl = task.getResult().getDownloadUrl().toString();
 
                     Toast.makeText(PostActivity.this, "the image is uploaded successful!!!", Toast.LENGTH_SHORT).show();
                     
@@ -164,6 +164,7 @@ public class PostActivity extends AppCompatActivity {
                     postMap.put("profileimage",userProfileImage);
                     postMap.put("fullname",userFullname);
                     postMap.put("status","0");
+
 
                     PostsRef.child(currentUserId + postRandomName).updateChildren(postMap)
                             .addOnCompleteListener(new OnCompleteListener() {
