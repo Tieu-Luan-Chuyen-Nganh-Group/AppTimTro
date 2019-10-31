@@ -25,6 +25,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -134,13 +135,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void DisplayAllPosts() {
+
+        Query allPostsAreAllowedToDisplay = PostsRef.orderByChild("status").equalTo("1");
         FirebaseRecyclerAdapter<Post, PostsViewHolder> firebaseRecyclerAdapter =
                 new FirebaseRecyclerAdapter<Post, PostsViewHolder>
                         (
                                 Post.class,
                                 R.layout.all_posts_layout,
                                 PostsViewHolder.class,
-                                PostsRef
+                                allPostsAreAllowedToDisplay
                         )
                 {
                     @Override
