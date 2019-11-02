@@ -31,12 +31,11 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity {
+public class AdminActivity extends AppCompatActivity {
 
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private RecyclerView postLists;
-    private ImageButton addNewPostBtn;
     private CircleImageView NavProfileImg;
     private TextView NavProfileUserName;
     private Toolbar mToolbar;
@@ -44,10 +43,12 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef, PostsRef;
     String currentUserId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_admin);
+
 
         // lấy danh sách account từ firebase
         mAuth = FirebaseAuth.getInstance();
@@ -61,85 +62,50 @@ public class MainActivity extends AppCompatActivity {
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
         PostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
 
-        UsersRef.child(currentUserId).child("Role").addValueEventListener(new ValueEventListener() {
+        mToolbar = (Toolbar) findViewById(R.id.admin_main_page_toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle("Admin Home");
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.admin_drawable_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(AdminActivity.this, drawerLayout ,R.string.drawer_open,R.string.drawer_close);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        navigationView = (NavigationView) findViewById(R.id.admin_navigation_view);
+
+        postLists = (RecyclerView) findViewById(R.id.admin_all_uses_post_list);
+        postLists.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(AdminActivity.this);
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+        postLists.setLayoutManager(linearLayoutManager);
+
+        View navView = navigationView.inflateHeaderView(R.layout.navigation_header);
+
+        NavProfileImg = (CircleImageView) navView.findViewById(R.id.nav_profile_img);
+        NavProfileUserName = (TextView) navView.findViewById(R.id.nav_username);
+
+        // lấy thông tin của user hiện tại hiện thị trong màn hình thông tin
+        UsersRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String role = dataSnapshot.getValue().toString();
-                if (role.equals("Admin") ){
-                    SendUserToAdminActivity();
-                }
-                else {
-                    mToolbar = (Toolbar) findViewById(R.id.main_page_toolbar);
-                    setSupportActionBar(mToolbar);
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    getSupportActionBar().setDisplayShowHomeEnabled(true);
-                    getSupportActionBar().setTitle("Home");
+                if(dataSnapshot.exists()){
+                    if(dataSnapshot.hasChild("fullname")){
+                        String fullname=dataSnapshot.child("fullname").getValue().toString();
+                        NavProfileUserName.setText(fullname);
+                    }
+                    if(dataSnapshot.hasChild("profileimage")){
+                        String image=dataSnapshot.child("profileimage").getValue().toString();
+                        Picasso.with(AdminActivity.this).load(image).placeholder(R.drawable.profile).into(NavProfileImg);
+                    }
+                    else {
+                        SendUserToSetupActivity();
+                        Toast.makeText(AdminActivity.this,"Profile image or name do not exists...", Toast.LENGTH_SHORT).show();
+                    }
 
-                    drawerLayout = (DrawerLayout) findViewById(R.id.drawable_layout);
-                    actionBarDrawerToggle = new ActionBarDrawerToggle(MainActivity.this, drawerLayout ,R.string.drawer_open,R.string.drawer_close);
-                    drawerLayout.addDrawerListener(actionBarDrawerToggle);
-                    actionBarDrawerToggle.syncState();
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    addNewPostBtn = (ImageButton) findViewById(R.id.imgBtn_add_new_post);
-                    navigationView = (NavigationView) findViewById(R.id.navigation_view);
-
-                    postLists = (RecyclerView) findViewById(R.id.all_uses_post_list);
-                    postLists.setHasFixedSize(true);
-                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this);
-                    linearLayoutManager.setReverseLayout(true);
-                    linearLayoutManager.setStackFromEnd(true);
-                    postLists.setLayoutManager(linearLayoutManager);
-
-                    View navView = navigationView.inflateHeaderView(R.layout.navigation_header);
-
-                    NavProfileImg = (CircleImageView) navView.findViewById(R.id.nav_profile_img);
-                    NavProfileUserName = (TextView) navView.findViewById(R.id.nav_username);
-
-                    // lấy thông tin của user hiện tại hiện thị trong màn hình thông tin
-                    UsersRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.exists()){
-                                if(dataSnapshot.hasChild("fullname")){
-                                    String fullname=dataSnapshot.child("fullname").getValue().toString();
-                                    NavProfileUserName.setText(fullname);
-                                }
-                                if(dataSnapshot.hasChild("profileimage")){
-                                    String image=dataSnapshot.child("profileimage").getValue().toString();
-                                    Picasso.with(MainActivity.this).load(image).placeholder(R.drawable.profile).into(NavProfileImg);
-                                }
-                                else {
-                                    SendUserToSetupActivity();
-                                    Toast.makeText(MainActivity.this,"Profile image or name do not exists...", Toast.LENGTH_SHORT).show();
-                                }
-
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-
-                    navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-                        @Override
-                        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                            UserMenuSelector(item);
-                            return false;
-                        }
-                    });
-
-                    // khi click vào button này thì chuyển đến màn hình thêm bài viết mới
-                    addNewPostBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            SendUserToPostActivity();
-                        }
-                    });
-
-                    //hiển thị tất cả bài đăng
-                    DisplayAllPosts();
                 }
             }
 
@@ -149,11 +115,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                UserMenuSelector(item);
+                return false;
+            }
+        });
+
+        // khi click vào button này thì chuyển đến màn hình thêm bài viết mới
+
+        //hiển thị tất cả bài đăng
+        DisplayAllPosts();
 
     }
 
     private void SendUserToAdminActivity() {
-        Intent adminActivity = new Intent(MainActivity.this, AdminActivity.class);
+        Intent adminActivity = new Intent(AdminActivity.this, AdminActivity.class);
         adminActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(adminActivity);
         finish();
@@ -161,25 +139,44 @@ public class MainActivity extends AppCompatActivity {
 
     private void DisplayAllPosts() {
 
-        Query allPostsAreAllowedToDisplay = PostsRef.orderByChild("status").equalTo("1");
-        FirebaseRecyclerAdapter<Post, PostsViewHolder> firebaseRecyclerAdapter =
-                new FirebaseRecyclerAdapter<Post, PostsViewHolder>
+        //Query Status1PostsAreAllowedToDisplay = PostsRef.orderByChild("status").startAt("0").endAt("1");
+        FirebaseRecyclerAdapter<Post, AdminActivity.PostsViewHolder> firebaseRecyclerAdapter =
+                new FirebaseRecyclerAdapter<Post, AdminActivity.PostsViewHolder>
                         (
                                 Post.class,
                                 R.layout.all_posts_layout,
-                                PostsViewHolder.class,
-                                allPostsAreAllowedToDisplay
+                                AdminActivity.PostsViewHolder.class,
+                                //Status1PostsAreAllowedToDisplay
+                                PostsRef
                         )
                 {
                     @Override
-                    protected void populateViewHolder(PostsViewHolder viewHolder, Post model, int position) {
+                    protected void populateViewHolder(AdminActivity.PostsViewHolder viewHolder, Post model, int position) {
 
-                        viewHolder.setFullname(model.getFullname());
-                        viewHolder.setDescription(model.getDescription());
-                        viewHolder.setDate(model.getDate());
-                        viewHolder.setTime(model.getTime());
-                        viewHolder.setProfileimage(getApplicationContext() , model.getProfileimage());
-                        viewHolder.setPostimage(getApplicationContext(), model.getPostimage());
+                        final String PostKey = getRef(position).getKey();
+                        if (!model.status.equals("1")){
+                            viewHolder.setFullname(model.getFullname());
+                            viewHolder.setDescription(model.getDescription());
+                            viewHolder.setDate(model.getDate());
+                            viewHolder.setTime(model.getTime());
+                            viewHolder.setProfileimage(getApplicationContext() , model.getProfileimage());
+                            viewHolder.setPostimage(getApplicationContext(), model.getPostimage());
+                            viewHolder.ApprovePosts(PostKey);
+                            viewHolder.DeletePosts(PostKey);
+                        }
+                        else {
+                            viewHolder.ChanceHideIcon();
+                            viewHolder.setFullname(model.getFullname());
+                            viewHolder.setDescription(model.getDescription());
+                            viewHolder.setDate(model.getDate());
+                            viewHolder.setTime(model.getTime());
+                            viewHolder.setProfileimage(getApplicationContext() , model.getProfileimage());
+                            viewHolder.setPostimage(getApplicationContext(), model.getPostimage());
+                            viewHolder.HiddenPosts(PostKey);
+                            viewHolder.DeletePosts(PostKey);
+                        }
+
+
                     }
                 };
 
@@ -189,11 +186,57 @@ public class MainActivity extends AppCompatActivity {
     public static class PostsViewHolder extends RecyclerView.ViewHolder{
 
 
+        private ImageButton ApproveImgButton, DeleteImgButton;
+        private DatabaseReference PostsRef;
         View mView;
 
         public PostsViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
+
+            PostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
+
+            ApproveImgButton = (ImageButton) mView.findViewById(R.id.post_approved);
+            DeleteImgButton = (ImageButton) mView.findViewById(R.id.post_delete);
+
+            ApproveImgButton.setVisibility(View.VISIBLE);
+            DeleteImgButton.setVisibility(View.VISIBLE);
+        }
+
+        public void HiddenPosts(final String postKey){
+            ApproveImgButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PostsRef.child(postKey).child("status").setValue("0");
+                    ChanceApproveIcon();
+                }
+            });
+        }
+
+        public void DeletePosts(final String postKey){
+            DeleteImgButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PostsRef.child(postKey).removeValue();
+                }
+            });
+        }
+
+        public void ApprovePosts(final String postKey){
+            ApproveImgButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PostsRef.child(postKey).child("status").setValue("1");
+                    ChanceHideIcon();
+                }
+            });
+        }
+
+        public void ChanceHideIcon(){
+            ApproveImgButton.setImageResource(R.drawable.hide);
+        }
+        public void ChanceApproveIcon(){
+            ApproveImgButton.setImageResource(R.drawable.check);
         }
 
         public void setFullname(String fullname) {
@@ -229,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
 
     // chuyển user tới màn hình thêm bài viết mới
     private void SendUserToPostActivity() {
-        Intent postActivity = new Intent(MainActivity.this, PostActivity.class);
+        Intent postActivity = new Intent(AdminActivity.this, PostActivity.class);
         startActivity(postActivity);
     }
 
@@ -267,7 +310,7 @@ public class MainActivity extends AppCompatActivity {
 
     // chuyển đến màn hình cập nhật thông tin user
     private void SendUserToSetupActivity() {
-        Intent setupActivity = new Intent(MainActivity.this, SetupActivity.class);
+        Intent setupActivity = new Intent(AdminActivity.this, SetupActivity.class);
         setupActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(setupActivity);
         finish();
@@ -276,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
 
     // chuyển đến màn hình login
     private void SendUserToLoginActivity() {
-        Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+        Intent loginIntent = new Intent(AdminActivity.this, LoginActivity.class);
         loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
         startActivity(loginIntent);
         finish();

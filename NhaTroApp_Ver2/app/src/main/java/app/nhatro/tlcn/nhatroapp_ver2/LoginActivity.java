@@ -17,6 +17,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -24,6 +31,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText UserEmailEditText, PassWordEditText;
     private ProgressDialog loadingBar;
     private FirebaseAuth mAuth;
+    private DatabaseReference UsersRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
+        UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
         loadingBar = new ProgressDialog(this);
         RegisterButton = (Button) findViewById(R.id.button_Login_CreateAccount);
@@ -75,9 +84,30 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            Toast.makeText(LoginActivity.this, "Login successfully!", Toast.LENGTH_SHORT).show();
-                            SendUserToMainActivity();
-                            loadingBar.dismiss();
+
+                            FirebaseUser currentUser = mAuth.getCurrentUser();
+                            String currentUserID = currentUser.getUid();
+                            //String role = UsersRef.child(currentUserID).child("Role").toString();
+                            //Toast.makeText(LoginActivity.this, role, Toast.LENGTH_SHORT).show();
+                            UsersRef.child(currentUserID).child("Role").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    String role = dataSnapshot.getValue().toString();
+                                    if (!role.equals("Admin") ){
+                                        SendUserToMainActivity();
+                                    }
+                                    else {
+                                        SendUserToAdminActivity();
+                                    }
+                                    loadingBar.dismiss();
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
                         }
                         else{
                             Toast.makeText(LoginActivity.this, "Error occur: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -87,6 +117,13 @@ public class LoginActivity extends AppCompatActivity {
                 });
             }
         }
+    }
+
+    private void SendUserToAdminActivity() {
+        Intent adminActivity = new Intent(LoginActivity.this, AdminActivity.class);
+        adminActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(adminActivity);
+        finish();
     }
 
     // chuyển đến màn hình chính khi đăng nhập thành công

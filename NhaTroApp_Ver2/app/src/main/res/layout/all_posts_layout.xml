@@ -95,6 +95,30 @@
             android:scaleType="centerCrop"
             android:layout_margin="3dp"
             android:adjustViewBounds="true"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/post_approved"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/check"
+                android:visibility="invisible"
+                 />
+
+            <ImageButton
+                android:id="@+id/post_delete"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/delete"
+                android:visibility="invisible"
+                />
+        </LinearLayout>
     </LinearLayout>
 
 </RelativeLayout>
