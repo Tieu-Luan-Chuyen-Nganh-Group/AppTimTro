@@ -3,8 +3,8 @@ package app.nhatro.tlcn.nhatroapp_ver2;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -141,7 +141,7 @@ public class SetupActivity extends AppCompatActivity {
                         if(task.isSuccessful()){
                             Toast.makeText(SetupActivity.this, "Profile Image stored successfully to Firebase storage...", Toast.LENGTH_SHORT).show();
 
-                            final String downloadUrl=task.getResult().getDownloadUrl().toString();
+                            final String downloadUrl=task.getResult().getStorage().getDownloadUrl().toString();
 
                             UsersRef.child("profileimage").setValue(downloadUrl)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
