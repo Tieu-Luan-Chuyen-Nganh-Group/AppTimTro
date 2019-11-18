@@ -3,8 +3,6 @@ package app.nhatro.tlcn.nhatroapp_ver2;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,7 +10,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -26,7 +28,6 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
-
 
 import java.util.HashMap;
 
@@ -131,7 +132,7 @@ public class SetupActivity extends AppCompatActivity {
                 loadingBar.show();
 
 
-                Uri resultUri=result.getUri();
+                final Uri resultUri=result.getUri();
 
                 final StorageReference filePath= UserProfileImageRef.child(currentUserID+".jpg");
 
@@ -140,27 +141,34 @@ public class SetupActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                         if(task.isSuccessful()){
                             Toast.makeText(SetupActivity.this, "Profile Image stored successfully to Firebase storage...", Toast.LENGTH_SHORT).show();
+//                            final String downloadUrl=task.getResult().getStorage().toString();
+                            Task <Uri> downloadTask = task.getResult().getMetadata().getReference().getDownloadUrl();
+                            downloadTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    String downloadUrl=uri.toString();
+                                    UsersRef.child("profileimage").setValue(downloadUrl)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if(task.isSuccessful()){
+                                                        Intent selfIntent=new Intent(SetupActivity.this,SetupActivity.class);
+                                                        startActivity(selfIntent);
 
-                            final String downloadUrl=task.getResult().getStorage().getDownloadUrl().toString();
+                                                        Toast.makeText(SetupActivity.this, "Profile Image stored successfully to Firebase Database Successfully...", Toast.LENGTH_SHORT).show();
+                                                        loadingBar.dismiss();
 
-                            UsersRef.child("profileimage").setValue(downloadUrl)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if(task.isSuccessful()){
-                                                Intent selfIntent=new Intent(SetupActivity.this,SetupActivity.class);
-                                                startActivity(selfIntent);
+                                                    }else
+                                                    {
+                                                        String message=task.getException().getMessage();
+                                                        Toast.makeText(SetupActivity.this, "Error Occured: "+message, Toast.LENGTH_SHORT).show();
+                                                        loadingBar.dismiss();
+                                                    }
+                                                }
+                                            });
+                                }
+                            });
 
-                                                Toast.makeText(SetupActivity.this, "Profile Image stored successfully to Firebase Database Successfully...", Toast.LENGTH_SHORT).show();
-                                                loadingBar.dismiss();
-
-                                            }else {
-                                                String message=task.getException().getMessage();
-                                                Toast.makeText(SetupActivity.this, "Error Occured: "+message, Toast.LENGTH_SHORT).show();
-                                                loadingBar.dismiss();
-                                            }
-                                        }
-                                    });
                         }
                     }
                 });
