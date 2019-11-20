@@ -1,0 +1,4 @@
+#Wed Nov 20 18:18:10 ICT 2019
+base.0=E\:\\Mon_hoc\\tlcn\\Git_Project\\AppTimTro\\NhaTroApp_Ver2\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
+path.0=classes.dex
+renamed.0=classes.dex

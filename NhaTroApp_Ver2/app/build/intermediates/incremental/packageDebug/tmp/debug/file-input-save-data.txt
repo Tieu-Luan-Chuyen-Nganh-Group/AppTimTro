@@ -1,0 +1,7 @@
+#Internal package file, do not edit.
+#Wed Nov 20 11:49:11 ICT 2019
+0.baseType=DIRECTORY
+0.base=E\:\\Mon_hoc\\tlcn\\Git_Project\\AppTimTro\\NhaTroApp_Ver2\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
+0.path=classes.dex
+0.set=DEX
+count=1
