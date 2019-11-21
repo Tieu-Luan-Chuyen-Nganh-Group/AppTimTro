@@ -2,15 +2,13 @@ package app.nhatro.tlcn.nhatroapp_ver2;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -132,7 +130,7 @@ public class PostActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if (task.isSuccessful()){
 
-                    downloadUrl = task.getResult().getDownloadUrl().toString();
+                    downloadUrl = task.getResult().getStorage().getDownloadUrl().toString();
 
                     Toast.makeText(PostActivity.this, "the image is uploaded successful!!!", Toast.LENGTH_SHORT).show();
                     

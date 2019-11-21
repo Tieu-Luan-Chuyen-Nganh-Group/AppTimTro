@@ -2,4 +2,5 @@
     <string name="app_name">NhaTroApp_Ver2</string>
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
+    <string name="title_activity_google_maps">Map</string>
 </resources>
