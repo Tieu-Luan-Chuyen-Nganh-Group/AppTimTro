@@ -145,15 +145,16 @@ public class SetupActivity extends AppCompatActivity {
                             Task <Uri> downloadTask = task.getResult().getMetadata().getReference().getDownloadUrl();
                             downloadTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
-                                public void onSuccess(Uri uri) {
-                                    String downloadUrl=uri.toString();
+                                public void onSuccess(final Uri uri) {
+                                    final String downloadUrl=uri.toString();
                                     UsersRef.child("profileimage").setValue(downloadUrl)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if(task.isSuccessful()){
-                                                        Intent selfIntent=new Intent(SetupActivity.this,SetupActivity.class);
-                                                        startActivity(selfIntent);
+                                                        /*Intent selfIntent=new Intent(SetupActivity.this,SetupActivity.class);
+                                                        startActivity(selfIntent);*/
+                                                        profileImage.setImageURI(uri);
 
                                                         Toast.makeText(SetupActivity.this, "Profile Image stored successfully to Firebase Database Successfully...", Toast.LENGTH_SHORT).show();
                                                         loadingBar.dismiss();
@@ -220,7 +221,7 @@ public class SetupActivity extends AppCompatActivity {
                                 Toast.makeText(SetupActivity.this, "Your account is created successfully!", Toast.LENGTH_LONG).show();
                                 SendUserToMainActivity();
                                 loadingBar.dismiss();
-                        }
+                            }
                             else {
                                 Toast.makeText(SetupActivity.this, "error occur:" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 loadingBar.dismiss();

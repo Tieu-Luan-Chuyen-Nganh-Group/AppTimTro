@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -43,7 +44,7 @@ public class PostActivity extends AppCompatActivity {
     private Uri ImageUri;
     private String description;
     private String currentUserId;
-    private String saveCurrentDate, saveCurrentTime, postRandomName, downloadUrl;
+    String saveCurrentDate, saveCurrentTime, postRandomName, downloadUrl;
     private ProgressDialog loadingBar;
 
     private StorageReference PostImageRef;
@@ -117,7 +118,7 @@ public class PostActivity extends AppCompatActivity {
 
         // lấy giờ hiện tại
         Calendar calendarForTime = Calendar.getInstance();
-        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
         saveCurrentTime = currentTime.format(calendarForDate.getTime());
 
         //ghép ngày và giờ thành 1 chuỗi để đặt tên cho hình ảnh khi lưu lên Firebase
@@ -130,7 +131,14 @@ public class PostActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if (task.isSuccessful()){
 
-                    downloadUrl = task.getResult().getStorage().getDownloadUrl().toString();
+                    final Task <Uri> downloadTask = task.getResult().getMetadata().getReference().getDownloadUrl();
+                    downloadTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            downloadUrl = uri.toString();
+                            PostsRef.child(currentUserId + postRandomName).child("postimage").setValue(downloadUrl);
+                        }
+                    });
 
                     Toast.makeText(PostActivity.this, "the image is uploaded successful!!!", Toast.LENGTH_SHORT).show();
                     
@@ -158,7 +166,7 @@ public class PostActivity extends AppCompatActivity {
                     postMap.put("date", saveCurrentDate);
                     postMap.put("time", saveCurrentTime);
                     postMap.put("description",description);
-                    postMap.put("postimage",downloadUrl);
+
                     postMap.put("profileimage",userProfileImage);
                     postMap.put("fullname",userFullname);
                     postMap.put("status","0");

@@ -64,83 +64,79 @@ public class MainActivity extends AppCompatActivity {
             UsersRef.child(currentUserId).child("Role").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+
                     String role = dataSnapshot.getValue().toString();
-                    if (role.equals("Admin") ){
-                        SendUserToAdminActivity();
-                    }
-                    else {
-                        mToolbar = (Toolbar) findViewById(R.id.main_page_toolbar);
-                        setSupportActionBar(mToolbar);
-                        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                        getSupportActionBar().setDisplayShowHomeEnabled(true);
-                        getSupportActionBar().setTitle("Home");
+                    mToolbar = (Toolbar) findViewById(R.id.main_page_toolbar);
+                    setSupportActionBar(mToolbar);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                    getSupportActionBar().setTitle("Home");
 
-                        drawerLayout = (DrawerLayout) findViewById(R.id.drawable_layout);
-                        actionBarDrawerToggle = new ActionBarDrawerToggle(MainActivity.this, drawerLayout ,R.string.drawer_open,R.string.drawer_close);
-                        drawerLayout.addDrawerListener(actionBarDrawerToggle);
-                        actionBarDrawerToggle.syncState();
-                        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                        addNewPostBtn = (ImageButton) findViewById(R.id.imgBtn_add_new_post);
-                        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+                    drawerLayout = (DrawerLayout) findViewById(R.id.drawable_layout);
+                    actionBarDrawerToggle = new ActionBarDrawerToggle(MainActivity.this, drawerLayout ,R.string.drawer_open,R.string.drawer_close);
+                    drawerLayout.addDrawerListener(actionBarDrawerToggle);
+                    actionBarDrawerToggle.syncState();
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    addNewPostBtn = (ImageButton) findViewById(R.id.imgBtn_add_new_post);
+                    navigationView = (NavigationView) findViewById(R.id.navigation_view);
 
-                        postLists = (RecyclerView) findViewById(R.id.all_uses_post_list);
-                        postLists.setHasFixedSize(true);
-                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this);
-                        linearLayoutManager.setReverseLayout(true);
-                        linearLayoutManager.setStackFromEnd(true);
-                        postLists.setLayoutManager(linearLayoutManager);
+                    postLists = (RecyclerView) findViewById(R.id.all_uses_post_list);
+                    postLists.setHasFixedSize(true);
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this);
+                    linearLayoutManager.setReverseLayout(true);
+                    linearLayoutManager.setStackFromEnd(true);
+                    postLists.setLayoutManager(linearLayoutManager);
 
-                        View navView = navigationView.inflateHeaderView(R.layout.navigation_header);
+                    View navView = navigationView.inflateHeaderView(R.layout.navigation_header);
 
-                        NavProfileImg = (CircleImageView) navView.findViewById(R.id.nav_profile_img);
-                        NavProfileUserName = (TextView) navView.findViewById(R.id.nav_username);
+                    NavProfileImg = (CircleImageView) navView.findViewById(R.id.nav_profile_img);
+                    NavProfileUserName = (TextView) navView.findViewById(R.id.nav_username);
 
-                        // lấy thông tin của user hiện tại hiện thị trong màn hình thông tin
-                        UsersRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if(dataSnapshot.exists()){
-                                    if(dataSnapshot.hasChild("fullname")){
-                                        String fullname=dataSnapshot.child("fullname").getValue().toString();
-                                        NavProfileUserName.setText(fullname);
-                                    }
-                                    if(dataSnapshot.hasChild("profileimage")){
-                                        String image=dataSnapshot.child("profileimage").getValue().toString();
-                                        Picasso.with(MainActivity.this).load(image).placeholder(R.drawable.profile).into(NavProfileImg);
-                                    }
-                                    else {
-                                        SendUserToSetupActivity();
-                                        Toast.makeText(MainActivity.this,"Profile image or name do not exists...", Toast.LENGTH_SHORT).show();
-                                    }
-
+                    // lấy thông tin của user hiện tại hiện thị trong màn hình thông tin
+                    UsersRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.exists()){
+                                if(dataSnapshot.hasChild("fullname")){
+                                    String fullname=dataSnapshot.child("fullname").getValue().toString();
+                                    NavProfileUserName.setText(fullname);
                                 }
+                                if(dataSnapshot.hasChild("profileimage")){
+                                    String image=dataSnapshot.child("profileimage").getValue().toString();
+                                    Picasso.with(MainActivity.this).load(image).placeholder(R.drawable.profile).into(NavProfileImg);
+                                }
+                                else {
+                                    SendUserToSetupActivity();
+                                    Toast.makeText(MainActivity.this,"Profile image or name do not exists...", Toast.LENGTH_SHORT).show();
+                                }
+
                             }
+                        }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                            }
-                        });
+                        }
+                    });
 
-                        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-                            @Override
-                            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                                UserMenuSelector(item);
-                                return false;
-                            }
-                        });
+                    navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                        @Override
+                        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                            UserMenuSelector(item);
+                            return false;
+                        }
+                    });
 
-                        // khi click vào button này thì chuyển đến màn hình thêm bài viết mới
-                        addNewPostBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                SendUserToPostActivity();
-                            }
-                        });
+                    // khi click vào button này thì chuyển đến màn hình thêm bài viết mới
+                    addNewPostBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            SendUserToPostActivity();
+                        }
+                    });
 
-                        //hiển thị tất cả bài đăng
-                        DisplayAllPosts();
-                    }
+                    //hiển thị tất cả bài đăng
+                    DisplayAllPosts();
                 }
 
                 @Override

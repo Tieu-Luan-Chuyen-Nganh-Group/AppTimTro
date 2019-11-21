@@ -3,4 +3,5 @@
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
     <string name="title_activity_google_maps">Map</string>
+    <string name="LimitNumberImage">You have to chose 4 images</string>
 </resources>

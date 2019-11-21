@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddNewRoomActivity">
+
+    <include
+        android:id="@+id/admin_addNewRoom_page_toolbar"
+        layout="@layout/app_bar_layout">
+    </include>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="55dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <EditText
+                android:id="@+id/editText_AddRoom_Address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/input"
+                android:drawableLeft="@drawable/address"
+                android:drawablePadding="15dp"
+                android:ems="10"
+                android:hint="Address"
+                android:inputType="textPersonName"
+                android:padding="10dp" />
+
+            <EditText
+                android:id="@+id/editText_AddRoom_Price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editText_AddRoom_Address"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/input"
+                android:drawableLeft="@drawable/price"
+                android:drawablePadding="15dp"
+                android:ems="10"
+                android:hint="Price"
+                android:inputType="textPersonName"
+                android:padding="10dp" />
+            <EditText
+                android:id="@+id/editText_AddRoom_Phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editText_AddRoom_Price"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/input"
+                android:drawableLeft="@drawable/phone"
+                android:drawablePadding="15dp"
+                android:ems="10"
+                android:hint="Phone"
+                android:inputType="textPersonName"
+                android:padding="10dp" />
+
+            <EditText
+                android:id="@+id/editText_AddRoom_Description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editText_AddRoom_Phone"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/input"
+                android:drawableLeft="@drawable/description"
+                android:drawablePadding="15dp"
+                android:ems="10"
+                android:hint="Description"
+                android:inputType="textPersonName"
+                android:padding="10dp" />
+
+            <LinearLayout
+                android:id="@+id/AddRoom_layout"
+                android:layout_width="380dp"
+                android:layout_height="440dp"
+                android:layout_below="@+id/editText_AddRoom_Description"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="70dp"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
+                    <ImageButton
+                        android:id="@+id/addNewRoom_addImg"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/add_post_high"
+                        android:background="@color/colorPrimaryDark"/>
+
+                    <TextView
+                        android:layout_width="320dp"
+                        android:layout_height="match_parent"
+                        android:padding="14dp"
+                        android:text="@string/LimitNumberImage"
+                        android:textSize="23sp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="190dp"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/AddRoom_img_1"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/uploadimg"
+                        android:layout_width="190dp"
+                        android:layout_height="190dp" />
+                    <ImageView
+                        android:id="@+id/AddRoom_img_2"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/uploadimg"
+                        android:layout_width="190dp"
+                        android:layout_height="190dp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="190dp">
+                    <ImageView
+                        android:id="@+id/AddRoom_img_3"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/uploadimg"
+                        android:layout_width="190dp"
+                        android:layout_height="190dp" />
+                    <ImageView
+                        android:id="@+id/AddRoom_img_4"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/uploadimg"
+                        android:layout_width="190dp"
+                        android:layout_height="190dp" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/button_Addroom_Add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/AddRoom_layout"
+                android:layout_marginStart="125dp"
+                android:layout_marginTop="-60dp"
+                android:background="@drawable/button"
+                android:text="Create Account"
+                android:textAllCaps="false"
+                android:textColor="@color/common_google_signin_btn_text_dark_default"
+                android:textSize="20sp" />
+        </RelativeLayout>
+
+    </ScrollView>
+</RelativeLayout>

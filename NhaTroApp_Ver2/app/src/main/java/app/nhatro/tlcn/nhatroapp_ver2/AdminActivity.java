@@ -25,6 +25,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -125,7 +126,7 @@ public class AdminActivity extends AppCompatActivity {
         // khi click vào button này thì chuyển đến màn hình thêm bài viết mới
 
         //hiển thị tất cả bài đăng
-        DisplayAllPosts();
+        DisplayAllPostsHaveStatusEqual_0();
 
     }
 
@@ -154,6 +155,7 @@ public class AdminActivity extends AppCompatActivity {
 
                         final String PostKey = getRef(position).getKey();
                         if (!model.status.equals("1")){
+                            viewHolder.ChanceApproveIcon();
                             viewHolder.setFullname(model.getFullname());
                             viewHolder.setDescription(model.getDescription());
                             viewHolder.setDate(model.getDate());
@@ -181,7 +183,38 @@ public class AdminActivity extends AppCompatActivity {
 
         postLists.setAdapter(firebaseRecyclerAdapter);
     }
+    private void DisplayAllPostsHaveStatusEqual_0() {
 
+        Query Status1PostsAreAllowedToDisplay = PostsRef.orderByChild("status").equalTo("0");
+        FirebaseRecyclerAdapter<Post, AdminActivity.PostsViewHolder> firebaseRecyclerAdapter =
+                new FirebaseRecyclerAdapter<Post, AdminActivity.PostsViewHolder>
+                        (
+                                Post.class,
+                                R.layout.all_posts_layout,
+                                AdminActivity.PostsViewHolder.class,
+                                Status1PostsAreAllowedToDisplay
+                        )
+                {
+                    @Override
+                    protected void populateViewHolder(AdminActivity.PostsViewHolder viewHolder, Post model, int position) {
+
+                        final String PostKey = getRef(position).getKey();
+
+                        viewHolder.ChanceApproveIcon();
+                        viewHolder.setFullname(model.getFullname());
+                        viewHolder.setDescription(model.getDescription());
+                        viewHolder.setDate(model.getDate());
+                        viewHolder.setTime(model.getTime());
+                        viewHolder.setProfileimage(getApplicationContext() , model.getProfileimage());
+                        viewHolder.setPostimage(getApplicationContext(), model.getPostimage());
+                        viewHolder.ApprovePosts(PostKey);
+                        viewHolder.DeletePosts(PostKey);
+
+                    }
+                };
+
+        postLists.setAdapter(firebaseRecyclerAdapter);
+    }
     public static class PostsViewHolder extends RecyclerView.ViewHolder{
 
 
@@ -336,30 +369,38 @@ public class AdminActivity extends AppCompatActivity {
     private void UserMenuSelector(MenuItem item) {
 
         switch (item.getItemId()){
-            case R.id.nav_profile:
+            case R.id.nav_ad_profile:
                 Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.nav_home:
+            case R.id.nav_ad_home:
+                DisplayAllPostsHaveStatusEqual_0();
                 Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.nav_newpost:
-                SendUserToPostActivity();
+            case R.id.nav_ad_allposts:
+                //SendUserToPostActivity();
+                DisplayAllPosts();
                 break;
-            case R.id.nav_findRoom:
-                Toast.makeText(this, "File room", Toast.LENGTH_SHORT).show();
+            case R.id.nav_ad_RoomList:
+                SendUserToRoomListActivity();
+                Toast.makeText(this, "Room list", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.nav_message:
+            case R.id.nav_ad_message:
                 Toast.makeText(this, "Message", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.nav_setting:
+            case R.id.nav_ad_setting:
                 Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.nav_logout:
+            case R.id.nav_ad_logout:
 
                 mAuth.signOut();
                 SendUserToLoginActivity();
                 Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    private void SendUserToRoomListActivity() {
+        Intent roomListIntent = new Intent(AdminActivity.this, RoomListActivity.class);
+        startActivity(roomListIntent);
     }
 }
