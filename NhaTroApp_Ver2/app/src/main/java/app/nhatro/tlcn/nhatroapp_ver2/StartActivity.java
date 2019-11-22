@@ -1,5 +1,6 @@
 package app.nhatro.tlcn.nhatroapp_ver2;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -35,7 +36,6 @@ public class StartActivity extends AppCompatActivity {
             currentUserId = mAuth.getCurrentUser().getUid();
             UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
             PostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
-
             UsersRef.child(currentUserId).child("Role").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -55,6 +55,13 @@ public class StartActivity extends AppCompatActivity {
             });
 
         }
+    }
+
+    private void SendUserToSetupActivity() {
+        Intent setupIntent = new Intent(StartActivity.this, SetupActivity.class);
+        setupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(setupIntent);
+        finish();
     }
 
     private void SendUserToAdminActivity() {

@@ -1,16 +1,26 @@
 package app.nhatro.tlcn.nhatroapp_ver2;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import com.google.android.material.navigation.NavigationView;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.pm.PackageManager;
+import android.content.pm.ProviderInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+
+import android.provider.ContactsContract;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -43,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef, PostsRef;
+    private static final int REQUEST_CALL = 1;
     String currentUserId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
     private void DisplayAllPosts() {
 
         Query allPostsAreAllowedToDisplay = PostsRef.orderByChild("status").equalTo("1");
-        FirebaseRecyclerAdapter<Post, PostsViewHolder> firebaseRecyclerAdapter =
+        final FirebaseRecyclerAdapter<Post, PostsViewHolder> firebaseRecyclerAdapter =
                 new FirebaseRecyclerAdapter<Post, PostsViewHolder>
                         (
                                 Post.class,
@@ -169,7 +180,10 @@ public class MainActivity extends AppCompatActivity {
                         )
                 {
                     @Override
-                    protected void populateViewHolder(PostsViewHolder viewHolder, Post model, int position) {
+                    protected void populateViewHolder(PostsViewHolder viewHolder, final Post model, int position) {
+
+
+                        final String PostKey = getRef(position).getKey();
 
                         viewHolder.setFullname(model.getFullname());
                         viewHolder.setDescription(model.getDescription());
@@ -177,20 +191,67 @@ public class MainActivity extends AppCompatActivity {
                         viewHolder.setTime(model.getTime());
                         viewHolder.setProfileimage(getApplicationContext() , model.getProfileimage());
                         viewHolder.setPostimage(getApplicationContext(), model.getPostimage());
+                        viewHolder.phoneImageButon.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                PostsRef.child(PostKey).child("numberphone").addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        String NumberPhone = dataSnapshot.getValue().toString();
+                                        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE)
+                                                != PackageManager.PERMISSION_GRANTED){
+                                            ActivityCompat.requestPermissions(MainActivity.this,
+                                                    new String[] {Manifest.permission.CALL_PHONE}, REQUEST_CALL);
+
+                                        }
+                                        else {
+                                            String dual = "tel:"+ NumberPhone;
+                                            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dual)));
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
+
+                            }
+                        });
+
+
+
                     }
                 };
 
         postLists.setAdapter(firebaseRecyclerAdapter);
     }
 
+    /*@Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_CALL){
+            if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+
+            }
+        }
+    }*/
+
     public static class PostsViewHolder extends RecyclerView.ViewHolder{
 
 
         View mView;
+        //private DatabaseReference PostsRef;
+        ImageButton phoneImageButon;
 
         public PostsViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
+           // PostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
+            phoneImageButon = (ImageButton) mView.findViewById(R.id.post_phone_imageButton);
+
         }
 
         public void setFullname(String fullname) {
@@ -210,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
 
         public void setDate(String date) {
             TextView datetxt = (TextView) mView.findViewById(R.id.post_date);
-            datetxt.setText("    " +date);
+            datetxt.setText(date);
         }
 
         public void setTime(String time) {
@@ -222,6 +283,8 @@ public class MainActivity extends AppCompatActivity {
             ImageView imagetxt = (ImageView) mView.findViewById(R.id.post_image);
             Picasso.with(ctx).load(postimage).into(imagetxt);
         }
+
+
     }
 
     // chuyển user tới màn hình thêm bài viết mới
@@ -301,7 +364,8 @@ public class MainActivity extends AppCompatActivity {
                 SendUserToPostActivity();
                 break;
             case R.id.nav_findRoom:
-                Toast.makeText(this, "File room", Toast.LENGTH_SHORT).show();
+                SendUserToMapActivity();
+                Toast.makeText(this, "Find room", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_message:
                 Toast.makeText(this, "Message", Toast.LENGTH_SHORT).show();
@@ -316,5 +380,11 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    private void SendUserToMapActivity() {
+        Intent mapIntent = new Intent(MainActivity.this, GoogleMapsActivity.class);
+        //mapIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
+        startActivity(mapIntent);
     }
 }

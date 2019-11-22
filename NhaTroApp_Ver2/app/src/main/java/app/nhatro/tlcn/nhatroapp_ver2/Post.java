@@ -2,7 +2,8 @@ package app.nhatro.tlcn.nhatroapp_ver2;
 
 public class Post {
 
-    public String uid, time, date, status, profileimage, postimage, fullname, description;
+    public String uid, time, date, status, profileimage, postimage, fullname, description, phone;
+
 
 
     public Post(){}
@@ -26,6 +27,18 @@ public class Post {
         this.postimage = postimage;
         this.fullname = fullname;
         this.description = description;
+    }
+
+    public Post(String uid, String time, String date, String status, String profileimage, String postimage, String fullname, String description, String phone) {
+        this.uid = uid;
+        this.time = time;
+        this.date = date;
+        this.status = status;
+        this.profileimage = profileimage;
+        this.postimage = postimage;
+        this.fullname = fullname;
+        this.description = description;
+        this.phone = phone;
     }
 
     public String getUid() {
@@ -90,5 +103,13 @@ public class Post {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

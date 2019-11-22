@@ -39,10 +39,10 @@ public class PostActivity extends AppCompatActivity {
     private Toolbar mToolbar;
 
     private ImageButton selectPostImageButton;
-    private Button updatePostButtin;
-    private EditText postDescription;
+    private Button updatePostButton;
+    private EditText postDescription, postNumberPhone;
     private Uri ImageUri;
-    private String description;
+    private String description, numberPhone;
     private String currentUserId;
     String saveCurrentDate, saveCurrentTime, postRandomName, downloadUrl;
     private ProgressDialog loadingBar;
@@ -65,8 +65,9 @@ public class PostActivity extends AppCompatActivity {
         loadingBar = new ProgressDialog(this);
 
         selectPostImageButton = (ImageButton) findViewById(R.id.select_post_image);
-        updatePostButtin = (Button) findViewById(R.id.update_post_button);
+        updatePostButton = (Button) findViewById(R.id.update_post_button);
         postDescription = (EditText) findViewById(R.id.post_description);
+        postNumberPhone = (EditText) findViewById(R.id.post_phone);
 
         mToolbar = (Toolbar) findViewById(R.id.update_post_page_toolbar);
         setSupportActionBar(mToolbar);
@@ -81,7 +82,7 @@ public class PostActivity extends AppCompatActivity {
             }
         });
 
-        updatePostButtin.setOnClickListener(new View.OnClickListener() {
+        updatePostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ValidatePostInfomation();
@@ -91,6 +92,7 @@ public class PostActivity extends AppCompatActivity {
 
     private void ValidatePostInfomation() {
         description = postDescription.getText().toString();
+        numberPhone = postNumberPhone.getText().toString();
 
         if (ImageUri == null){
             Toast.makeText(PostActivity.this, "Please select image", Toast.LENGTH_SHORT).show();
@@ -99,13 +101,19 @@ public class PostActivity extends AppCompatActivity {
             if (TextUtils.isEmpty(description)){
                 Toast.makeText(PostActivity.this, "Please write content... ", Toast.LENGTH_SHORT).show();
             }
-            else{
-                loadingBar.setTitle("Add new post");
-                loadingBar.setMessage("Please wait...");
-                loadingBar.show();
-                loadingBar.setCanceledOnTouchOutside(true);
-                StoringImageToFireBaseStogare();
+            else {
+                if (TextUtils.isEmpty(numberPhone)){
+                    Toast.makeText(PostActivity.this, "Please write number phone... ", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    loadingBar.setTitle("Add new post");
+                    loadingBar.setMessage("Please wait...");
+                    loadingBar.show();
+                    loadingBar.setCanceledOnTouchOutside(true);
+                    StoringImageToFireBaseStogare();
+                }
             }
+
         }
     }
 
@@ -161,11 +169,13 @@ public class PostActivity extends AppCompatActivity {
                     String userFullname = dataSnapshot.child("fullname").getValue().toString();
                     String userProfileImage = dataSnapshot.child("profileimage").getValue().toString();
 
+
                     HashMap postMap = new HashMap();
                     postMap.put("uid", currentUserId);
                     postMap.put("date", saveCurrentDate);
                     postMap.put("time", saveCurrentTime);
                     postMap.put("description",description);
+                    postMap.put("numberphone", numberPhone);
 
                     postMap.put("profileimage",userProfileImage);
                     postMap.put("fullname",userFullname);
