@@ -240,7 +240,7 @@ public class PostActivity extends AppCompatActivity {
 
     // chuyển đến màn hình chính
     private void SendUserToMainActivity() {
-        Intent mainIntent = new Intent(PostActivity.this, MainActivity.class);
-        startActivity(mainIntent);
+            Intent mainIntent = new Intent(PostActivity.this, MainActivity.class);
+            startActivity(mainIntent);
     }
 }

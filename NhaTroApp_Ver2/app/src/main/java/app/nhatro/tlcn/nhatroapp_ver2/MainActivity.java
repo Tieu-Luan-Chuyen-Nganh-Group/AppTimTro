@@ -1,11 +1,15 @@
 package app.nhatro.tlcn.nhatroapp_ver2;
 
 import android.Manifest;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -14,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -54,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef, PostsRef;
     private static final int REQUEST_CALL = 1;
+    private ProgressDialog loadingBar;
     String currentUserId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         }else{
             currentUserId = mAuth.getCurrentUser().getUid();
 
+            loadingBar = new ProgressDialog(this);
             UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
             PostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
 
@@ -180,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
                         )
                 {
                     @Override
-                    protected void populateViewHolder(PostsViewHolder viewHolder, final Post model, int position) {
+                    protected void populateViewHolder(final PostsViewHolder viewHolder, final Post model, int position) {
 
 
                         final String PostKey = getRef(position).getKey();
@@ -194,20 +201,95 @@ public class MainActivity extends AppCompatActivity {
                         viewHolder.phoneImageButon.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                PostsRef.child(PostKey).child("numberphone").addValueEventListener(new ValueEventListener() {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                builder.setTitle("Make a phone");
+                                final TextView textView = new TextView(MainActivity.this);
+                                textView.setText("Are you sure you want to make a phone?");
+                                builder.setView(textView);
+                                textView.setTextSize(16);
+                                textView.setPadding(50,50,50,50);
+                                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        PostsRef.child(PostKey).child("numberphone").addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                if (dataSnapshot.exists()){
+                                                    String NumberPhone = dataSnapshot.getValue().toString();
+                                                    if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE)
+                                                            != PackageManager.PERMISSION_GRANTED){
+                                                        ActivityCompat.requestPermissions(MainActivity.this,
+                                                                new String[] {Manifest.permission.CALL_PHONE}, REQUEST_CALL);
+
+                                                    }
+                                                    else {
+                                                        String dual = "tel:"+ NumberPhone;
+                                                        startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dual)));
+                                                    }
+                                                }
+                                                else {
+                                                    Toast.makeText(MainActivity.this, "Sory! Exist a prolem so you can't call anyone now!", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+                                    }
+                                });
+
+                                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                                Dialog dialog = builder.create();
+                                dialog.show();
+                                dialog.getWindow().setBackgroundDrawableResource(R.color.backgroundAlerDialog);
+                            }
+                        });
+
+                        viewHolder.optionsImageButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                PostsRef.child(PostKey).child("uid").addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        String NumberPhone = dataSnapshot.getValue().toString();
-                                        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE)
-                                                != PackageManager.PERMISSION_GRANTED){
-                                            ActivityCompat.requestPermissions(MainActivity.this,
-                                                    new String[] {Manifest.permission.CALL_PHONE}, REQUEST_CALL);
+                                        if (dataSnapshot.exists()){
+                                            String currentUserID = dataSnapshot.getValue().toString();
+                                            if (!currentUserID.equals(currentUserId)) {
+                                                Toast.makeText(MainActivity.this, "You aren't allow to do anything with this post!", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                CharSequence options[] = new CharSequence[]{
+                                                        "Edit post",
+                                                        "Delete post"
+                                                };
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                                builder.setTitle("Choice option");
+                                                builder.setItems(options, new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        if (which == 0){
+                                                            SendUserToEditPostActivity(PostKey);
+                                                            Toast.makeText(MainActivity.this, "Edit post", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                        if (which == 1){
+                                                            DeletePost(PostKey);
+                                                            Toast.makeText(MainActivity.this, "Delete post", Toast.LENGTH_SHORT).show();
+                                                        }
 
+                                                    }
+                                                });
+
+                                                builder.show();
+                                            }
                                         }
-                                        else {
-                                            String dual = "tel:"+ NumberPhone;
-                                            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dual)));
-                                        }
+
                                     }
 
                                     @Override
@@ -216,10 +298,8 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 });
 
-
                             }
                         });
-
 
 
                     }
@@ -228,31 +308,68 @@ public class MainActivity extends AppCompatActivity {
         postLists.setAdapter(firebaseRecyclerAdapter);
     }
 
-    /*@Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    private void DeletePost(final String postKey) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Delete post");
+        final TextView textView = new TextView(MainActivity.this);
+        textView.setText("Are you sure you want to delete this post?");
 
-        if (requestCode == REQUEST_CALL){
-            if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+        builder.setView(textView);
+        textView.setTextSize(16);
+        textView.setPadding(50,50,50,50);
 
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                loadingBar.setTitle("Delete post");
+                loadingBar.setMessage("Please wait...");
+                loadingBar.show();
+                loadingBar.setCanceledOnTouchOutside(true);
+                PostsRef.child(postKey).removeValue();
+                loadingBar.dismiss();
+                Toast.makeText(MainActivity.this, "Delete post successfully!", Toast.LENGTH_SHORT).show();
             }
-        }
-    }*/
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        Dialog dialog = builder.create();
+        dialog.show();
+        dialog.getWindow().setBackgroundDrawableResource(R.color.backgroundAlerDialog);
+    }
+
+
+    private void SendUserToEditPostActivity(String postKey) {
+        Intent editPostIntent = new Intent(MainActivity.this, EditPostActivity.class);
+        editPostIntent.putExtra("PostKey", postKey);
+        startActivity(editPostIntent);
+    }
 
     public static class PostsViewHolder extends RecyclerView.ViewHolder{
 
 
         View mView;
         //private DatabaseReference PostsRef;
-        ImageButton phoneImageButon;
+        ImageButton phoneImageButon, optionsImageButton;
+        NavigationView a;
 
         public PostsViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
            // PostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
             phoneImageButon = (ImageButton) mView.findViewById(R.id.post_phone_imageButton);
+            optionsImageButton = (ImageButton) mView.findViewById(R.id.post_selectOptions_imageButton);
+
 
         }
+
 
         public void setFullname(String fullname) {
             TextView usernametxt = (TextView) mView.findViewById(R.id.post_username);

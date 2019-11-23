@@ -1,12 +1,23 @@
 package app.nhatro.tlcn.nhatroapp_ver2;
 
+import android.Manifest;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import com.google.android.material.navigation.NavigationView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,6 +54,7 @@ public class AdminActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef, PostsRef;
     String currentUserId;
+    private ProgressDialog loadingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +79,8 @@ public class AdminActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Admin Home");
+
+        loadingBar = new ProgressDialog(this);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.admin_drawable_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(AdminActivity.this, drawerLayout ,R.string.drawer_open,R.string.drawer_close);
@@ -151,7 +165,7 @@ public class AdminActivity extends AppCompatActivity {
                         )
                 {
                     @Override
-                    protected void populateViewHolder(AdminActivity.PostsViewHolder viewHolder, Post model, int position) {
+                    protected void populateViewHolder(final AdminActivity.PostsViewHolder viewHolder, Post model, int position) {
 
                         final String PostKey = getRef(position).getKey();
                         if (!model.status.equals("1")){
@@ -162,8 +176,20 @@ public class AdminActivity extends AppCompatActivity {
                             viewHolder.setTime(model.getTime());
                             viewHolder.setProfileimage(getApplicationContext() , model.getProfileimage());
                             viewHolder.setPostimage(getApplicationContext(), model.getPostimage());
-                            viewHolder.ApprovePosts(PostKey);
-                            viewHolder.DeletePosts(PostKey);
+                            viewHolder.ApproveImgButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    ApproveAnyPost(PostKey);
+                                    viewHolder.ChanceHideIcon();
+                                }
+                            });
+                            //viewHolder.DeletePosts(PostKey);
+                            viewHolder.DeleteImgButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    DeleteAnyPost(PostKey);
+                                }
+                            });
                         }
                         else {
                             viewHolder.ChanceHideIcon();
@@ -173,8 +199,19 @@ public class AdminActivity extends AppCompatActivity {
                             viewHolder.setTime(model.getTime());
                             viewHolder.setProfileimage(getApplicationContext() , model.getProfileimage());
                             viewHolder.setPostimage(getApplicationContext(), model.getPostimage());
-                            viewHolder.HiddenPosts(PostKey);
-                            viewHolder.DeletePosts(PostKey);
+                            viewHolder.ApproveImgButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    HiddenAnyPost(PostKey);
+                                    viewHolder.ChanceApproveIcon();
+                                }
+                            });
+                            viewHolder.DeleteImgButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    DeleteAnyPost(PostKey);
+                                }
+                            });
                         }
 
 
@@ -182,6 +219,107 @@ public class AdminActivity extends AppCompatActivity {
                 };
 
         postLists.setAdapter(firebaseRecyclerAdapter);
+    }
+
+    public void DeleteAnyPost(final String postKey){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(AdminActivity.this);
+        builder.setTitle("Delete post");
+        final TextView textView = new TextView(AdminActivity.this);
+        textView.setText("Are you sure you want to delete this post?");
+        builder.setView(textView);
+        textView.setTextSize(16);
+        textView.setPadding(50,50,50,50);
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                loadingBar.setTitle("Delete post");
+                loadingBar.setMessage("Please wait...");
+                loadingBar.show();
+                loadingBar.setCanceledOnTouchOutside(true);
+                PostsRef.child(postKey).removeValue();
+                loadingBar.dismiss();
+                Toast.makeText(AdminActivity.this, "Delete post successfully!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        Dialog dialog = builder.create();
+        dialog.show();
+        dialog.getWindow().setBackgroundDrawableResource(R.color.backgroundAlerDialog);
+
+    }
+
+    public void ApproveAnyPost(final String postKey){
+        AlertDialog.Builder builder = new AlertDialog.Builder(AdminActivity.this);
+        builder.setTitle("Approve post");
+        final TextView textView = new TextView(AdminActivity.this);
+        textView.setText("Are you sure you want to approve this post?");
+        builder.setView(textView);
+        textView.setTextSize(16);
+        textView.setPadding(50,50,50,50);
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                loadingBar.setTitle("Approve post");
+                loadingBar.setMessage("Please wait...");
+                loadingBar.show();
+                loadingBar.setCanceledOnTouchOutside(true);
+                PostsRef.child(postKey).child("status").setValue("1");
+                loadingBar.dismiss();
+                Toast.makeText(AdminActivity.this, "Approve post successfully!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        Dialog dialog = builder.create();
+        dialog.show();
+        dialog.getWindow().setBackgroundDrawableResource(R.color.backgroundAlerDialog);
+    }
+
+    public void HiddenAnyPost(final String postKey){
+        AlertDialog.Builder builder = new AlertDialog.Builder(AdminActivity.this);
+        builder.setTitle("Hidden post");
+        final TextView textView = new TextView(AdminActivity.this);
+        textView.setText("Are you sure you want to hidden this post?");
+        builder.setView(textView);
+        textView.setTextSize(16);
+        textView.setPadding(50,50,50,50);
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                loadingBar.setTitle("Hidden post");
+                loadingBar.setMessage("Please wait...");
+                loadingBar.show();
+                loadingBar.setCanceledOnTouchOutside(true);
+                PostsRef.child(postKey).child("status").setValue("0");
+                loadingBar.dismiss();
+                Toast.makeText(AdminActivity.this, "Hidden post successfully!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        Dialog dialog = builder.create();
+        dialog.show();
+        dialog.getWindow().setBackgroundDrawableResource(R.color.backgroundAlerDialog);
     }
     private void DisplayAllPostsHaveStatusEqual_0() {
 
@@ -196,7 +334,7 @@ public class AdminActivity extends AppCompatActivity {
                         )
                 {
                     @Override
-                    protected void populateViewHolder(AdminActivity.PostsViewHolder viewHolder, Post model, int position) {
+                    protected void populateViewHolder(final AdminActivity.PostsViewHolder viewHolder, Post model, int position) {
 
                         final String PostKey = getRef(position).getKey();
 
@@ -207,8 +345,20 @@ public class AdminActivity extends AppCompatActivity {
                         viewHolder.setTime(model.getTime());
                         viewHolder.setProfileimage(getApplicationContext() , model.getProfileimage());
                         viewHolder.setPostimage(getApplicationContext(), model.getPostimage());
-                        viewHolder.ApprovePosts(PostKey);
-                        viewHolder.DeletePosts(PostKey);
+                        viewHolder.ApproveImgButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                ApproveAnyPost(PostKey);
+                                viewHolder.ChanceHideIcon();
+                            }
+                        });
+                       // viewHolder.DeletePosts(PostKey);
+                        viewHolder.DeleteImgButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                DeleteAnyPost(PostKey);
+                            }
+                        });
 
                     }
                 };
@@ -233,35 +383,6 @@ public class AdminActivity extends AppCompatActivity {
 
             ApproveImgButton.setVisibility(View.VISIBLE);
             DeleteImgButton.setVisibility(View.VISIBLE);
-        }
-
-        public void HiddenPosts(final String postKey){
-            ApproveImgButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    PostsRef.child(postKey).child("status").setValue("0");
-                    ChanceApproveIcon();
-                }
-            });
-        }
-
-        public void DeletePosts(final String postKey){
-            DeleteImgButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    PostsRef.child(postKey).removeValue();
-                }
-            });
-        }
-
-        public void ApprovePosts(final String postKey){
-            ApproveImgButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    PostsRef.child(postKey).child("status").setValue("1");
-                    ChanceHideIcon();
-                }
-            });
         }
 
         public void ChanceHideIcon(){

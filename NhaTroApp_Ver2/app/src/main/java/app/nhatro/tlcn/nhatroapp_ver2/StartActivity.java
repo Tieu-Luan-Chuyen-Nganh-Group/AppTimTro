@@ -39,13 +39,20 @@ public class StartActivity extends AppCompatActivity {
             UsersRef.child(currentUserId).child("Role").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    String role = dataSnapshot.getValue().toString();
-                    if (role.equals("Admin") ){
-                        SendUserToAdminActivity();
+
+                    if (!dataSnapshot.exists()){
+                        SendUserToSetupActivity();
                     }
                     else {
-                        SendUserToMainActivity();
+                        String role = dataSnapshot.getValue().toString();
+                        if (role.equals("Admin") ){
+                            SendUserToAdminActivity();
+                        }
+                        else {
+                            SendUserToMainActivity();
+                        }
                     }
+
                 }
 
                 @Override
@@ -53,7 +60,22 @@ public class StartActivity extends AppCompatActivity {
 
                 }
             });
+        }
 
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if (currentUser == null) {
+            SendUserToLoginActivity();
+            //SendUserToRegisterActivity();
+        } else {
+            CheckUserExistence();
         }
     }
 
@@ -62,6 +84,24 @@ public class StartActivity extends AppCompatActivity {
         setupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(setupIntent);
         finish();
+    }
+    private void CheckUserExistence() {
+        final String current_user_id = mAuth.getCurrentUser().getUid();
+
+        UsersRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.hasChild(current_user_id)){
+                    SendUserToSetupActivity();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     private void SendUserToAdminActivity() {
