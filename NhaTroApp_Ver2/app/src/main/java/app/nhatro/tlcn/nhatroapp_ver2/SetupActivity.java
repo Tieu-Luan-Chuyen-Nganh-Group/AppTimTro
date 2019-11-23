@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -40,7 +41,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SetupActivity extends AppCompatActivity {
 
-    private EditText usernameEdittext, fullnameEdittext, birthdayEdittext;
+    private EditText usernameEdittext, fullnameEdittext;
+    private TextView birthdayEdittext;
     private Button SaveButton;
     private CircleImageView profileImage;
     private FirebaseAuth mAuth;
@@ -67,7 +69,7 @@ public class SetupActivity extends AppCompatActivity {
 
         usernameEdittext = (EditText) findViewById(R.id.editText_Setup_Username);
         fullnameEdittext = (EditText) findViewById(R.id.editText_Setup_Fullname);
-        birthdayEdittext = (EditText) findViewById(R.id.editText_Setup_Birthday);
+        birthdayEdittext = (TextView) findViewById(R.id.editText_Setup_Birthday);
 
         birthdayEdittext.setOnClickListener(new View.OnClickListener() {
             @Override
