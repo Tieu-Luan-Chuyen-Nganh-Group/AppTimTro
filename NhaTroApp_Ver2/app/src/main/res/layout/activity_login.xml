@@ -21,9 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imageView_logo"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/input"
         android:drawableLeft="@drawable/envelope"
         android:drawablePadding="15dp"
@@ -52,13 +50,9 @@
         android:id="@+id/button_Login_CreateAccount"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/button_Login_Login"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="125dp"
+        android:layout_below="@id/editText_Login_Password"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
         android:background="@drawable/button"
         android:text="Create Account"
         android:textAllCaps="false"
@@ -69,12 +63,9 @@
         android:id="@+id/button_Login_Login"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="100dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="124dp"
+        android:layout_below="@+id/editText_Login_Password"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="220dp"
         android:background="@drawable/button"
         android:text="Login"
         android:textAllCaps="false"
@@ -82,38 +73,52 @@
         android:textSize="20sp" />
 
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/fogetpassWord_Login_TextView"
+        android:layout_below="@id/button_Login_CreateAccount"
+        android:layout_marginLeft="100dp"
         android:layout_width="match_parent"
+        android:layout_marginTop="5dp"
+        android:textSize="20sp"
+        android:textColor="@color/TextColor"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="16dp"
-        android:orientation="horizontal"
-        android:weightSum="4">
+        android:text="Forget your password"/>
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/DifferentAccount_Login_Layout"
+            android:layout_below="@id/fogetpassWord_Login_TextView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:fontFamily="serif"
-            android:text="Login with:"
-            android:textColor="?attr/colorError"
-            android:textSize="30sp" />
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal"
+            android:weightSum="4">
 
-        <ImageView
-            android:id="@+id/imageView_Login_Facebook"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_weight="1"
-            android:src="@drawable/facebook" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:fontFamily="serif"
+                android:paddingLeft="10dp"
+                android:text="Login with:"
+                android:textColor="?attr/colorError"
+                android:textSize="30sp" />
 
-        <ImageView
-            android:id="@+id/imageView_Login_Google"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_weight="1"
-            android:src="@drawable/google" />
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/imageView_Login_Facebook"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:src="@drawable/facebook" />
+
+            <ImageView
+                android:id="@+id/imageView_Login_Google"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:src="@drawable/google" />
+        </LinearLayout>
+
+
+
 </RelativeLayout>

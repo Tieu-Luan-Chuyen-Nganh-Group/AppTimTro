@@ -5,4 +5,5 @@
     <color name="colorHeaderBackgroud">#9cfd45</color>
     <color name="colorAccent">#E9EBEE</color>
     <color name="backgroundAlerDialog">#9ea1a7</color>
+    <color name="TextColor">#090cec</color>
 </resources>
