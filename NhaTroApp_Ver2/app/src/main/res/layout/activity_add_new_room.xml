@@ -79,12 +79,42 @@
                 android:hint="Description"
                 android:inputType="textPersonName"
                 android:padding="10dp" />
+            <EditText
+                android:id="@+id/editText_AddRoom_Latitude"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editText_AddRoom_Description"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/input"
+                android:drawableLeft="@drawable/latitude"
+                android:drawablePadding="15dp"
+                android:ems="10"
+                android:hint="Latitude"
+                android:inputType="textPersonName"
+                android:padding="10dp" />
+            <EditText
+                android:id="@+id/editText_AddRoom_Longitude"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editText_AddRoom_Latitude"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/input"
+                android:drawableLeft="@drawable/longitude"
+                android:drawablePadding="15dp"
+                android:ems="10"
+                android:hint="Longidtude"
+                android:inputType="textPersonName"
+                android:padding="10dp" />
 
             <LinearLayout
                 android:id="@+id/AddRoom_layout"
                 android:layout_width="380dp"
                 android:layout_height="440dp"
-                android:layout_below="@+id/editText_AddRoom_Description"
+                android:layout_below="@+id/editText_AddRoom_Longitude"
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="70dp"

@@ -42,7 +42,7 @@
         android:ems="10"
         android:layout_marginTop="10dp"
         android:hint="write phone"
-        android:inputType="textMultiLine"
+        android:inputType="phone"
         android:padding="15dp" />
 
     <Button

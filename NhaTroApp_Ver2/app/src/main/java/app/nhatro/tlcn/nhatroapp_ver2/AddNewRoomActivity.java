@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.accessibilityservice.GestureDescription;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -43,7 +44,7 @@ public class AddNewRoomActivity extends AppCompatActivity {
     private static final int LimitNumerImg = 4;
     private Toolbar mToolbar;
     private Button addNewRoomBtn;
-    private EditText editTextAddress, editTextPrice, editTextPhone, editTextDescription;
+    private EditText editTextAddress, editTextPrice, editTextPhone, editTextDescription, editTextLatitude, editTextLongitude;
     private ImageView img1, img2, img3, img4;
     private ImageButton addImageRoom;
     private int ImgCount, currentImgSelect;
@@ -81,6 +82,8 @@ public class AddNewRoomActivity extends AppCompatActivity {
         editTextPrice = (EditText) findViewById(R.id.editText_AddRoom_Price);
         editTextPhone = (EditText) findViewById(R.id.editText_AddRoom_Phone);
         editTextDescription = (EditText) findViewById(R.id.editText_AddRoom_Description);
+        editTextLatitude = (EditText) findViewById(R.id.editText_AddRoom_Latitude);
+        editTextLongitude = (EditText) findViewById(R.id.editText_AddRoom_Longitude);
 
         img1 = (ImageView) findViewById(R.id.AddRoom_img_1);
         img2 = (ImageView) findViewById(R.id.AddRoom_img_2);
@@ -155,6 +158,8 @@ public class AddNewRoomActivity extends AppCompatActivity {
         String price = editTextPrice.getText().toString();
         String phone = editTextPhone.getText().toString();
         String description = editTextDescription.getText().toString();
+        String latitude = editTextLatitude.getText().toString();
+        String longitude = editTextLongitude.getText().toString();
 
         if (TextUtils.isEmpty(address)){
             Toast.makeText(AddNewRoomActivity.this, "Please write address!", Toast.LENGTH_SHORT).show();
@@ -172,52 +177,65 @@ public class AddNewRoomActivity extends AppCompatActivity {
                         Toast.makeText(AddNewRoomActivity.this, "Please write description!", Toast.LENGTH_SHORT).show();
                     }
                     else {
-                        if (currentImgSelect <LimitNumerImg || currentImgSelect > LimitNumerImg ){
-                            ImageList.removeAll(ImageList);
-                            bitmaps.removeAll(bitmaps);
-                            Toast.makeText(AddNewRoomActivity.this, "You must chose " + LimitNumerImg + " image", Toast.LENGTH_SHORT).show();
+
+
+                        if (TextUtils.isEmpty(latitude)){
+                            Toast.makeText(AddNewRoomActivity.this, "Please write latitude!", Toast.LENGTH_SHORT).show();
                         }
                         else {
+                            if (TextUtils.isEmpty(longitude)){
+                                Toast.makeText(AddNewRoomActivity.this, "Please write longitude!", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                  if (currentImgSelect <LimitNumerImg || currentImgSelect > LimitNumerImg ){
+                                      ImageList.removeAll(ImageList);
+                                      bitmaps.removeAll(bitmaps);
+                                      Toast.makeText(AddNewRoomActivity.this, "You must chose " + LimitNumerImg + " image", Toast.LENGTH_SHORT).show();
+                                  }
+                                  else {
+                                        HashMap hashMap = new HashMap();
+                                        hashMap.put("Address", address);
+                                        hashMap.put("Price", price);
+                                        hashMap.put("Phone", phone);
+                                        hashMap.put("Description", description);
+                                        hashMap.put("Latitude", latitude);
+                                        hashMap.put("Longitude", longitude);
 
-                            HashMap hashMap = new HashMap();
-                            hashMap.put("Address", address);
-                            hashMap.put("Price", price);
-                            hashMap.put("Phone", phone);
-                            hashMap.put("Description", description);
+                                        StorageReference fileFolder = RoomImagesRef.child("Room images");
+                                        RandomID();
 
-                            StorageReference fileFolder = RoomImagesRef.child("Room images");
-                            RandomID();
-
-                            RoomRef.child(RoomRandomName).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
-                                @Override
-                                public void onComplete(@NonNull Task task) {
-                                    if (task.isSuccessful()){
-                                        Toast.makeText(AddNewRoomActivity.this, "Add new room successfully!", Toast.LENGTH_LONG).show();
-                                        SendUserToRoomListActivity();
-                                    }
-                                    else {
-                                        Toast.makeText(AddNewRoomActivity.this, "error occur:" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-
-                            for (int i=0; i< currentImgSelect; i++){
-                                Uri filePath = ImageList.get(i);
-                                StorageReference imageName = fileFolder.child("Img" + filePath.getLastPathSegment() + RoomRandomName);
-
-                                imageName.putFile(filePath).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                        final Task <Uri> downloadTask = task.getResult().getMetadata().getReference().getDownloadUrl();
-                                        downloadTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        RoomRef.child(RoomRandomName).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
                                             @Override
-                                            public void onSuccess(Uri uri) {
-                                                String downloadUri = uri.toString();
-                                                RoomRef.child(RoomRandomName).child("imageList").push().setValue(downloadUri);
+                                            public void onComplete(@NonNull Task task) {
+                                                if (task.isSuccessful()){
+                                                    Toast.makeText(AddNewRoomActivity.this, "Add new room successfully!", Toast.LENGTH_LONG).show();
+                                                    SendUserToRoomListActivity();
+                                                }
+                                                else {
+                                                    Toast.makeText(AddNewRoomActivity.this, "error occur:" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                                }
                                             }
                                         });
-                                    }
-                                });
+
+                                        for (int i=0; i< currentImgSelect; i++){
+                                            Uri filePath = ImageList.get(i);
+                                            StorageReference imageName = fileFolder.child("Img" + filePath.getLastPathSegment() + RoomRandomName);
+
+                                            imageName.putFile(filePath).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                                    final Task <Uri> downloadTask = task.getResult().getMetadata().getReference().getDownloadUrl();
+                                                    downloadTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                        @Override
+                                                        public void onSuccess(Uri uri) {
+                                                            String downloadUri = uri.toString();
+                                                            RoomRef.child(RoomRandomName).child("imageList").push().setValue(downloadUri);
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                  }
                             }
                         }
                     }
