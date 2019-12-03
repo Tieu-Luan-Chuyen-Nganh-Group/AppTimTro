@@ -3,6 +3,8 @@ package app.nhatro.tlcn.nhatroapp_ver2;
 import android.content.Context;
 import android.content.Intent;
 import androidx.annotation.NonNull;
+
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.material.navigation.NavigationView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -283,6 +285,15 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
+    // chuyển đến màn hình tìm trọ
+
+    private void SendUserToGoogleMapsActivity() {
+        Intent mapIntent = new Intent(MainActivity.this, GoogleMapsActivity.class);
+        mapIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
+        startActivity(mapIntent);
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -305,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
                 SendUserToPostActivity();
                 break;
             case R.id.nav_findRoom:
-                Toast.makeText(this, "File room", Toast.LENGTH_SHORT).show();
+                SendUserToGoogleMapsActivity();
                 break;
             case R.id.nav_message:
                 Toast.makeText(this, "Message", Toast.LENGTH_SHORT).show();
