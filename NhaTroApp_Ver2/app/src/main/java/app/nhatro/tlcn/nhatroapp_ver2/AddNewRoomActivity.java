@@ -221,6 +221,8 @@ public class AddNewRoomActivity extends AppCompatActivity {
                                             Uri filePath = ImageList.get(i);
                                             StorageReference imageName = fileFolder.child("Img" + filePath.getLastPathSegment() + RoomRandomName);
 
+                                            final String childI = String.valueOf(i + 1);
+
                                             imageName.putFile(filePath).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -229,7 +231,7 @@ public class AddNewRoomActivity extends AppCompatActivity {
                                                         @Override
                                                         public void onSuccess(Uri uri) {
                                                             String downloadUri = uri.toString();
-                                                            RoomRef.child(RoomRandomName).child("imageList").push().setValue(downloadUri);
+                                                            RoomRef.child(RoomRandomName).child("imageList").child(childI).setValue(downloadUri);
                                                         }
                                                     });
                                                 }

@@ -367,7 +367,6 @@ public class MainActivity extends AppCompatActivity {
             phoneImageButon = (ImageButton) mView.findViewById(R.id.post_phone_imageButton);
             optionsImageButton = (ImageButton) mView.findViewById(R.id.post_selectOptions_imageButton);
 
-
         }
 
 
