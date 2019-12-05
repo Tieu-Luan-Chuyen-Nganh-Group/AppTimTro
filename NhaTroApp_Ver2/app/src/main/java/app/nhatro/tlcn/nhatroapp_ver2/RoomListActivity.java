@@ -139,7 +139,7 @@ public class RoomListActivity extends AppCompatActivity {
         }
 
         public void setImg1(final Context ctx, String RoomKey) {
-            RoomRef.child(RoomKey).child("imageList").child("1").addValueEventListener(new ValueEventListener() {
+            RoomRef.child(RoomKey).child("imageList").child("0").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()){
@@ -155,7 +155,7 @@ public class RoomListActivity extends AppCompatActivity {
             });
         }
         public void setImg2(final Context ctx, String RoomKey) {
-            RoomRef.child(RoomKey).child("imageList").child("2").addValueEventListener(new ValueEventListener() {
+            RoomRef.child(RoomKey).child("imageList").child("1").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()){
@@ -171,7 +171,7 @@ public class RoomListActivity extends AppCompatActivity {
             });
         }
         public void setImg3(final Context ctx, String RoomKey) {
-            RoomRef.child(RoomKey).child("imageList").child("3").addValueEventListener(new ValueEventListener() {
+            RoomRef.child(RoomKey).child("imageList").child("2").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()){
@@ -187,7 +187,7 @@ public class RoomListActivity extends AppCompatActivity {
             });
         }
         public void setImg4(final Context ctx, String RoomKey) {
-            RoomRef.child(RoomKey).child("imageList").child("4").addValueEventListener(new ValueEventListener() {
+            RoomRef.child(RoomKey).child("imageList").child("3").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()){

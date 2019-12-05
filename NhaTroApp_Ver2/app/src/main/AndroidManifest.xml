@@ -42,7 +42,8 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".RoomListActivity" />
         <activity android:name=".AddNewRoomActivity" />
-        <activity android:name=".EditPostActivity"></activity>
+        <activity android:name=".EditPostActivity" />
+        <activity android:name=".ResultSearchRoomActivity"></activity>
     </application>
 
 </manifest>

@@ -221,7 +221,7 @@ public class AddNewRoomActivity extends AppCompatActivity {
                                             Uri filePath = ImageList.get(i);
                                             StorageReference imageName = fileFolder.child("Img" + filePath.getLastPathSegment() + RoomRandomName);
 
-                                            final String childI = String.valueOf(i + 1);
+                                            final String childI = String.valueOf(i);
 
                                             imageName.putFile(filePath).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                                 @Override

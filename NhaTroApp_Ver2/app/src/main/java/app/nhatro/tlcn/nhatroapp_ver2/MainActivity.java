@@ -26,8 +26,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
 import android.provider.ContactsContract;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -480,7 +483,8 @@ public class MainActivity extends AppCompatActivity {
                 SendUserToPostActivity();
                 break;
             case R.id.nav_findRoom:
-                SendUserToMapActivity();
+                WriteAreaNeedFind();
+                //SendUserToMapActivity();
                 Toast.makeText(this, "Find room", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_message:
@@ -496,6 +500,47 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    private void WriteAreaNeedFind() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Write area you want to find");
+        final EditText address = new EditText(MainActivity.this);
+        //emailReset.setText("Are you sure you want to delete this post?");
+        address.setHint("Please write area");
+        builder.setView(address);
+        address.setTextSize(16);
+        address.setPadding(50,50,50,50);
+
+        builder.setPositiveButton("Search", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (TextUtils.isEmpty(address.getText())){
+                    Toast.makeText(MainActivity.this, "Please write area!", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    SendUserToResultSeachRoomActivity(address.getText().toString());
+                }
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        Dialog dialog = builder.create();
+        dialog.show();
+        dialog.getWindow().setBackgroundDrawableResource(R.color.backgroundAlerDialog);
+
+
+    }
+
+    private void SendUserToResultSeachRoomActivity(String address) {
+        Intent resultIntent = new Intent(MainActivity.this, ResultSearchRoomActivity.class);
+        resultIntent.putExtra("address", address);
+        startActivity(resultIntent);
     }
 
     private void SendUserToMapActivity() {
