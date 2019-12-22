@@ -31,7 +31,7 @@
         android:background="@drawable/input"
         android:ems="10"
         android:hint="write something"
-        android:inputType="textMultiLine|phone"
+        android:inputType="text"
         android:padding="15dp" />
     <EditText
         android:id="@+id/edit_post_phone"
