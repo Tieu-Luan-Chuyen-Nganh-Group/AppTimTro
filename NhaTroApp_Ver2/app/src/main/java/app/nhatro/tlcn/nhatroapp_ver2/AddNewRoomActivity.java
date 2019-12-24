@@ -82,8 +82,6 @@ public class AddNewRoomActivity extends AppCompatActivity {
         editTextPrice = (EditText) findViewById(R.id.editText_AddRoom_Price);
         editTextPhone = (EditText) findViewById(R.id.editText_AddRoom_Phone);
         editTextDescription = (EditText) findViewById(R.id.editText_AddRoom_Description);
-        editTextLatitude = (EditText) findViewById(R.id.editText_AddRoom_Latitude);
-        editTextLongitude = (EditText) findViewById(R.id.editText_AddRoom_Longitude);
 
         img1 = (ImageView) findViewById(R.id.AddRoom_img_1);
         img2 = (ImageView) findViewById(R.id.AddRoom_img_2);
@@ -177,16 +175,9 @@ public class AddNewRoomActivity extends AppCompatActivity {
                         Toast.makeText(AddNewRoomActivity.this, "Please write description!", Toast.LENGTH_SHORT).show();
                     }
                     else {
+                         {
 
-
-                        if (TextUtils.isEmpty(latitude)){
-                            Toast.makeText(AddNewRoomActivity.this, "Please write latitude!", Toast.LENGTH_SHORT).show();
-                        }
-                        else {
-                            if (TextUtils.isEmpty(longitude)){
-                                Toast.makeText(AddNewRoomActivity.this, "Please write longitude!", Toast.LENGTH_SHORT).show();
-                            }
-                            else{
+                            {
                                   if (currentImgSelect <LimitNumerImg || currentImgSelect > LimitNumerImg ){
                                       ImageList.removeAll(ImageList);
                                       bitmaps.removeAll(bitmaps);
@@ -198,8 +189,6 @@ public class AddNewRoomActivity extends AppCompatActivity {
                                         hashMap.put("Price", price);
                                         hashMap.put("Phone", phone);
                                         hashMap.put("Description", description);
-                                        hashMap.put("Latitude", latitude);
-                                        hashMap.put("Longitude", longitude);
 
                                         StorageReference fileFolder = RoomImagesRef.child("Room images");
                                         RandomID();

@@ -83,8 +83,6 @@ public class RoomListActivity extends AppCompatActivity {
                         roomViewHolder.setPhone(room.getPhone());
                         roomViewHolder.setPrice(room.getPhone());
                         roomViewHolder.setDescription(room.getDescription());
-                        roomViewHolder.setLatitude(room.getLatitude());
-                        roomViewHolder.setLongitude(room.getLongitude());
                         roomViewHolder.setImg1(getApplicationContext(), RoomKey);
                         roomViewHolder.setImg2(getApplicationContext(), RoomKey);
                         roomViewHolder.setImg3(getApplicationContext(), RoomKey);
@@ -126,16 +124,6 @@ public class RoomListActivity extends AppCompatActivity {
         public void setDescription(String description) {
             TextView txtDescription= (TextView) mView.findViewById(R.id.editText_RoomList_Description);
             txtDescription.setText(description);
-        }
-
-        public void setLatitude(String latitude) {
-            TextView txtLatitude= (TextView) mView.findViewById(R.id.editText_RoomList_Latitude);
-            txtLatitude.setText(latitude);
-        }
-
-        public void setLongitude(String longitude) {
-            TextView txtLongitude= (TextView) mView.findViewById(R.id.editText_RoomList_Longitude);
-            txtLongitude.setText(longitude);
         }
 
         public void setImg1(final Context ctx, String RoomKey) {

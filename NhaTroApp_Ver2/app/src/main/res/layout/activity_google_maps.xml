@@ -7,28 +7,72 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".GoogleMapsActivity">
-
+<LinearLayout
+    android:layout_marginTop="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <ImageView
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/origin"/>
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
+        android:padding="10dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/edt_layout"
         android:id="@+id/etOrigin"
+        android:textSize="40px"
+        android:paddingLeft="10dp"
         android:hint="Enter origin address" />
+</LinearLayout>
 
+    <ImageView
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:src="@drawable/dot"/>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <ImageView
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/location"/>
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter destination address"
+        android:layout_height="40dp"
+        android:drawablePadding="15dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/edt_layout"
+        android:textSize="40px"
+        android:paddingEnd="10dp"
+        android:paddingLeft="10dp"
         android:id="@+id/etDestination" />
+</LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+
         >
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Find path"
+            android:layout_marginLeft="30dp"
             android:id="@+id/btnFindPath" />
         <ImageView
             android:layout_marginLeft="20dp"
