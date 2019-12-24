@@ -82,6 +82,7 @@
             android:layout_marginLeft="30dp"
             android:background="#ffffff"
             />
+
     </LinearLayout>
 
     <TextView

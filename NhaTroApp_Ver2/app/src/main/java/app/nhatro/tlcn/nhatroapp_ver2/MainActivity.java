@@ -266,7 +266,26 @@ public class MainActivity extends AppCompatActivity {
                                         if (dataSnapshot.exists()){
                                             String currentUserID = dataSnapshot.getValue().toString();
                                             if (!currentUserID.equals(currentUserId)) {
-                                                Toast.makeText(MainActivity.this, "You aren't allow to do anything with this post!", Toast.LENGTH_SHORT).show();
+                                               // Toast.makeText(MainActivity.this, "You aren't allow to do anything with this post!", Toast.LENGTH_SHORT).show();
+
+                                                    PostsRef.child(PostKey).child("address").addValueEventListener(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                            if (dataSnapshot.exists()) {
+                                                                String desAddress = dataSnapshot.getValue().toString();
+                                                                SendUserToMapActivity(desAddress);
+                                                            }
+                                                            else {
+                                                                Toast.makeText(MainActivity.this, "Don't have any address!!!!", Toast.LENGTH_SHORT).show();
+
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                        }
+                                                    });
                                             } else {
                                                 CharSequence options[] = new CharSequence[]{
                                                         "Edit post",
@@ -488,6 +507,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Find room", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_message:
+                //SendUserToMapActivity();
                 Toast.makeText(this, "Message", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_setting:
@@ -543,9 +563,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(resultIntent);
     }
 
-    private void SendUserToMapActivity() {
+    private void SendUserToMapActivity(String desAdress) {
         Intent mapIntent = new Intent(MainActivity.this, GoogleMapsActivity.class);
-        //mapIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
+        mapIntent.putExtra("address",desAdress);
         startActivity(mapIntent);
     }
 }

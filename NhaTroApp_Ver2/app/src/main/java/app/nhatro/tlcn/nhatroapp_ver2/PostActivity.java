@@ -40,9 +40,9 @@ public class PostActivity extends AppCompatActivity {
 
     private ImageButton selectPostImageButton;
     private Button updatePostButton;
-    private EditText postDescription, postNumberPhone;
+    private EditText postDescription, postNumberPhone, postAddress;
     private Uri ImageUri;
-    private String description, numberPhone;
+    private String description, numberPhone, address;
     private String currentUserId;
     String saveCurrentDate, saveCurrentTime, postRandomName, downloadUrl;
     private ProgressDialog loadingBar;
@@ -68,7 +68,7 @@ public class PostActivity extends AppCompatActivity {
         updatePostButton = (Button) findViewById(R.id.update_post_button);
         postDescription = (EditText) findViewById(R.id.post_description);
         postNumberPhone = (EditText) findViewById(R.id.post_phone);
-
+        postAddress=(EditText) findViewById(R.id.post_address);
         mToolbar = (Toolbar) findViewById(R.id.update_post_page_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -93,6 +93,7 @@ public class PostActivity extends AppCompatActivity {
     private void ValidatePostInfomation() {
         description = postDescription.getText().toString();
         numberPhone = postNumberPhone.getText().toString();
+        address=postAddress.getText().toString();
 
         if (ImageUri == null){
             Toast.makeText(PostActivity.this, "Please select image", Toast.LENGTH_SHORT).show();
@@ -106,11 +107,16 @@ public class PostActivity extends AppCompatActivity {
                     Toast.makeText(PostActivity.this, "Please write number phone... ", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    loadingBar.setTitle("Add new post");
-                    loadingBar.setMessage("Please wait...");
-                    loadingBar.show();
-                    loadingBar.setCanceledOnTouchOutside(true);
-                    StoringImageToFireBaseStogare();
+                    if (TextUtils.isEmpty(address)){
+                        Toast.makeText(PostActivity.this, "Please write address... ", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        loadingBar.setTitle("Add new post");
+                        loadingBar.setMessage("Please wait...");
+                        loadingBar.show();
+                        loadingBar.setCanceledOnTouchOutside(true);
+                        StoringImageToFireBaseStogare();
+                    }
                 }
             }
 
@@ -176,6 +182,7 @@ public class PostActivity extends AppCompatActivity {
                     postMap.put("time", saveCurrentTime);
                     postMap.put("description",description);
                     postMap.put("numberphone", numberPhone);
+                    postMap.put("address",address);
 
                     postMap.put("profileimage",userProfileImage);
                     postMap.put("fullname",userFullname);
