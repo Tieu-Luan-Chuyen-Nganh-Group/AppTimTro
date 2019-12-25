@@ -180,7 +180,9 @@ public class AdminActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(View v) {
                                     ApproveAnyPost(PostKey);
-                                    viewHolder.ChanceHideIcon();
+                                    if (PostsRef.child(PostKey).child("status").equals("0")){
+                                        viewHolder.ChanceHideIcon();
+                                    }
                                 }
                             });
                             //viewHolder.DeletePosts(PostKey);
@@ -203,7 +205,10 @@ public class AdminActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(View v) {
                                     HiddenAnyPost(PostKey);
-                                    viewHolder.ChanceApproveIcon();
+                                    if (PostsRef.child(PostKey).child("status").equals("1")){
+                                        viewHolder.ChanceHideIcon();
+                                    }
+                                   // viewHolder.ChanceApproveIcon();
                                 }
                             });
                             viewHolder.DeleteImgButton.setOnClickListener(new View.OnClickListener() {
@@ -349,7 +354,7 @@ public class AdminActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 ApproveAnyPost(PostKey);
-                                viewHolder.ChanceHideIcon();
+                                //viewHolder.ChanceHideIcon();
                             }
                         });
                        // viewHolder.DeletePosts(PostKey);
