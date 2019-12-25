@@ -48,7 +48,7 @@ public class ResultSearchRoomActivity extends AppCompatActivity {
     private RecyclerView ResultList;
     private DatabaseReference RoomRef, PostsRef;
     private Toolbar mToolbar;
-    private ImageButton reSultPostImgBtn;
+    //private ImageButton reSultPostImgBtn;
     private ArrayList<Post> postResultlist = new ArrayList<>();
 
     @Override
@@ -58,7 +58,7 @@ public class ResultSearchRoomActivity extends AppCompatActivity {
 
 
         mToolbar = (Toolbar) findViewById(R.id.result_searchRoom_page_toolbar);
-        reSultPostImgBtn = (ImageButton) findViewById(R.id.result_Post);
+        //reSultPostImgBtn = (ImageButton) findViewById(R.id.result_Post);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -70,13 +70,13 @@ public class ResultSearchRoomActivity extends AppCompatActivity {
         ResultList.setHasFixedSize(true);
         GetPostListHaveKeyWordEqualArea();
 
-        reSultPostImgBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GetPostListHaveKeyWordEqualArea();
-                //Toast.makeText(ResultSearchRoomActivity.this, "1", Toast.LENGTH_SHORT).show();
-            }
-        });
+//        reSultPostImgBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                GetPostListHaveKeyWordEqualArea();
+//                //Toast.makeText(ResultSearchRoomActivity.this, "1", Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
 
