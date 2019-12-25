@@ -158,7 +158,7 @@ public class AdminActivity extends AppCompatActivity {
                 new FirebaseRecyclerAdapter<Post, AdminActivity.PostsViewHolder>
                         (
                                 Post.class,
-                                R.layout.all_posts_layout,
+                                R.layout.all_post_layout_admin,
                                 AdminActivity.PostsViewHolder.class,
                                 //Status1PostsAreAllowedToDisplay
                                 PostsRef
@@ -328,7 +328,7 @@ public class AdminActivity extends AppCompatActivity {
                 new FirebaseRecyclerAdapter<Post, AdminActivity.PostsViewHolder>
                         (
                                 Post.class,
-                                R.layout.all_posts_layout,
+                                R.layout.all_post_layout_admin,
                                 AdminActivity.PostsViewHolder.class,
                                 Status1PostsAreAllowedToDisplay
                         )
