@@ -87,7 +87,7 @@ public class ResultSearchRoomActivity extends AppCompatActivity {
                Post post = dataSnapshot.getValue(Post.class);
                String postDes = ConvertStringUTF8_String(post.description.toLowerCase());
                String keyWord = ConvertStringUTF8_String(area.toLowerCase());
-               if (postDes.contains(keyWord)){
+               if (postDes.contains(keyWord) && post.status.equals("1")){
                    postResultlist.add(post);
                }
                RecyclerViewAdapter adapter = new RecyclerViewAdapter(ResultSearchRoomActivity.this, postResultlist);
