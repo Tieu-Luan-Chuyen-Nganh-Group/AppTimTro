@@ -44,7 +44,7 @@ public class AddNewRoomActivity extends AppCompatActivity {
     private static final int LimitNumerImg = 4;
     private Toolbar mToolbar;
     private Button addNewRoomBtn;
-    private EditText editTextAddress, editTextPrice, editTextPhone, editTextDescription, editTextLatitude, editTextLongitude;
+    private EditText editTextAddress, editTextPrice, editTextPhone, editTextDescription;
     private ImageView img1, img2, img3, img4;
     private ImageButton addImageRoom;
     private int ImgCount, currentImgSelect;
@@ -156,8 +156,6 @@ public class AddNewRoomActivity extends AppCompatActivity {
         String price = editTextPrice.getText().toString();
         String phone = editTextPhone.getText().toString();
         String description = editTextDescription.getText().toString();
-        String latitude = editTextLatitude.getText().toString();
-        String longitude = editTextLongitude.getText().toString();
 
         if (TextUtils.isEmpty(address)){
             Toast.makeText(AddNewRoomActivity.this, "Please write address!", Toast.LENGTH_SHORT).show();
