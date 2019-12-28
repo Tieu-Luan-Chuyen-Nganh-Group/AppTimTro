@@ -37,8 +37,9 @@
 
         <activity
             android:name=".GoogleMapsActivity"
-            android:label="@string/title_activity_google_maps"></activity>
-        <activity android:name=".StartActivity"
+            android:label="@string/title_activity_google_maps" />
+        <activity
+            android:name=".StartActivity"
             android:label="@string/title_activity_google_maps">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -59,6 +60,7 @@
         <activity android:name=".AddNewRoomActivity" />
         <activity android:name=".EditPostActivity" />
         <activity android:name=".ResultSearchRoomActivity" />
+        <activity android:name=".UpdateProfileActivity"></activity>
     </application>
 
 </manifest>

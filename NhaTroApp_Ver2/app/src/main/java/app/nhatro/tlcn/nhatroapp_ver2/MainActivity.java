@@ -170,13 +170,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void SendUserToAdminActivity() {
-        Intent adminActivity = new Intent(MainActivity.this, AdminActivity.class);
-        adminActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(adminActivity);
-        finish();
-    }
-
     private void DisplayAllPosts() {
 
         Query allPostsAreAllowedToDisplay = PostsRef.orderByChild("status").equalTo("1");
@@ -431,6 +424,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(postActivity);
     }
 
+    private void SendUserToUpdateProfileActivity() {
+        Intent updateProfileActivity = new Intent(MainActivity.this, UpdateProfileActivity.class);
+        startActivity(updateProfileActivity);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -493,6 +491,7 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()){
             case R.id.nav_profile:
+                SendUserToUpdateProfileActivity();
                 Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_home:
