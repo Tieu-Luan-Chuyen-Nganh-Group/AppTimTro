@@ -132,7 +132,7 @@ public class PostActivity extends AppCompatActivity {
 
         // lấy giờ hiện tại
         Calendar calendarForTime = Calendar.getInstance();
-        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm");
         saveCurrentTime = currentTime.format(calendarForDate.getTime());
 
         //ghép ngày và giờ thành 1 chuỗi để đặt tên cho hình ảnh khi lưu lên Firebase
